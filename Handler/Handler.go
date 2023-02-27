@@ -2,16 +2,42 @@ package forum
 
 import (
 	"fmt"
+	fcr "forum/Create"
+	fd "forum/Datas"
 	fl "forum/Login"
 	fr "forum/Register"
+	ft "forum/Topic"
 	"html/template"
-	"io"
 	"net/http"
 )
 
+type displayerror struct {
+	Leprobleme string
+	Chargee    bool
+}
+
+var t displayerror
+
+var Topics []fd.Topic
+
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
+	Topics = ft.GetTopics()
+	fmt.Println(Topics)
 	var tmpl *template.Template
 	tmpl = template.Must(template.ParseFiles("./static/index.html"))
+	err := tmpl.Execute(w, Topics)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Fprintln(w, err)
+	}
+	return
+}
+
+func HandleCreate(w http.ResponseWriter, r *http.Request) {
+	var tmpl *template.Template
+	tmpl = template.Must(template.ParseFiles("./static/chat.html"))
+	create := r.FormValue("chat1")
+	fcr.Create(create)
 	err := tmpl.Execute(w, nil)
 	if err != nil {
 		fmt.Println(err)
@@ -43,13 +69,20 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	tmpl = template.Must(template.ParseFiles("./static/login.html"))
 	val := fl.Login(name, password)
 	if val == 1 {
-		fmt.Fprintf(io.Discard, "coucou")
-		fmt.Println("coucou")
+		t.Leprobleme = "Invalid Username or Password"
+		err := tmpl.Execute(w, t)
+		if err != nil {
+			fmt.Println(err)
+			fmt.Fprintln(w, err)
+		}
+	} else {
+		t.Leprobleme = "Login Successful"
+		err := tmpl.Execute(w, t)
+		if err != nil {
+			fmt.Println(err)
+			fmt.Fprintln(w, err)
+		}
 	}
-	err := tmpl.Execute(w, nil)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Fprintln(w, err)
-	}
+
 	return
 }

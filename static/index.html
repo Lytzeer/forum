@@ -7,13 +7,23 @@
     <link href="../static/dist/style.css" rel="stylesheet">
     <title>Main Page</title>
 </head>
-<body class="bg-pink">
-    <a href="/login">
-        <button >Se connecter UwU</button>
-    </a>
-    <a href="/register">
-        <button>S'inscire UwU</button>
-    </a>
-    
+<body class="bg-black min-h-screen text-white">
+    <div class="flex justify-end gap-1">
+        <a href="/login">
+            <button>Login</button>
+        </a>
+        <a href="/register">
+            <button>Register</button>
+        </a>
+    </div>
+    <p>--------------</p>
+    {{ range . }}       
+        <p>{{ .TopicID }}</p>
+        <p>{{ .TopicCreator }}</p>
+        <p>{{ .TopicTitle }}</p>
+        <p>{{ .TopicDate }}</p>
+        <p>--------------</p>
+    {{ end }}
+    <footer class="footer">Mathéo LANG | Timothée DURAN | Lukas Portier</footer>
 </body>
 </html>

@@ -12,7 +12,6 @@ import (
 var filedb string = "./database/forum.db"
 
 func Login(username string, password string) int {
-
 	if username == "" || password == "" {
 		return 1
 	} else {
