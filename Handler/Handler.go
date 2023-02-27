@@ -17,6 +17,7 @@ type displayerror struct {
 }
 
 var t displayerror
+var cucu fd.User
 
 var Topics []fd.Topic
 
@@ -37,7 +38,7 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 	var tmpl *template.Template
 	tmpl = template.Must(template.ParseFiles("./static/chat.html"))
 	create := r.FormValue("chat1")
-	fcr.Create(create)
+	fcr.Create(create, cucu.User_name)
 	err := tmpl.Execute(w, nil)
 	if err != nil {
 		fmt.Println(err)
@@ -52,7 +53,8 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	namer := r.FormValue("name")
 	mail := r.FormValue("mail-name")
 	passwordr := r.FormValue("password-login")
-	fr.Register(namer, mail, passwordr)
+	confipass := r.FormValue("conf-password-login")
+	fr.Register(namer, mail, passwordr, confipass)
 	err := tmpl.Execute(w, nil)
 	if err != nil {
 		fmt.Println(err)
@@ -65,6 +67,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("mail-name")
 	password := r.FormValue("password-login")
 	fmt.Println(name, password)
+	cucu.User_name = name
 	var tmpl *template.Template
 	tmpl = template.Must(template.ParseFiles("./static/login.html"))
 	val := fl.Login(name, password)
