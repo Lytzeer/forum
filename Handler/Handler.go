@@ -78,6 +78,13 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			fmt.Fprintln(w, err)
 		}
+	} else if val == 2 {
+		t.Leprobleme = "kk c fo"
+		err := tmpl.Execute(w, t)
+		if err != nil {
+			fmt.Println(err)
+			fmt.Fprintln(w, err)
+		}
 	} else {
 		t.Leprobleme = "Login Successful"
 		err := tmpl.Execute(w, t)
@@ -86,6 +93,5 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, err)
 		}
 	}
-
 	return
 }

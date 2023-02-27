@@ -26,9 +26,6 @@ func Login(username string, password string) int {
 		fmt.Println(string(hash))
 		request_select := "SELECT username, email, password FROM User WHERE username = '" + username + "' OR email = '" + username + "' AND password = '" + string(hash) + "'"
 		rows, err := db.Query(request_select)
-		if rows == nil {
-			return 2
-		}
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -42,6 +39,9 @@ func Login(username string, password string) int {
 				log.Fatal(err)
 			}
 			fmt.Println(username_db, email_db, password_db)
+		}
+		if username_db == "" || email_db == "" || password_db == "" {
+			return 2
 		}
 		rows.Close()
 		return 0
