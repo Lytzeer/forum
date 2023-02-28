@@ -513,12 +513,29 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
+.static {
+  position: static;
+}
+
 .col-start-2 {
   grid-column-start: 2;
 }
 
+.row-span-2 {
+  grid-row: span 2 / span 2;
+}
+
 .row-start-2 {
   grid-row-start: 2;
+}
+
+.m-4 {
+  margin: 1rem;
+}
+
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .flex {
@@ -529,8 +546,12 @@ video {
   display: grid;
 }
 
-.min-h-screen {
-  min-height: 100vh;
+.h-10 {
+  height: 2.5rem;
+}
+
+.w-10 {
+  width: 2.5rem;
 }
 
 .grid-cols-3 {
@@ -541,12 +562,28 @@ video {
   grid-template-rows: repeat(3, minmax(0, 1fr));
 }
 
+.flex-row {
+  flex-direction: row;
+}
+
 .flex-col {
   flex-direction: column;
 }
 
 .justify-end {
   justify-content: flex-end;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
 }
 
 .gap-1 {
@@ -571,18 +608,38 @@ video {
   border-color: rgb(220 38 38 / var(--tw-border-opacity));
 }
 
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
-}
-
 .bg-gray-400 {
   --tw-bg-opacity: 1;
   background-color: rgb(156 163 175 / var(--tw-bg-opacity));
 }
 
+.bg-purp {
+  --tw-bg-opacity: 1;
+  background-color: rgb(125 79 254 / var(--tw-bg-opacity));
+}
+
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
 .text-center {
   text-align: center;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.text-purp {
+  --tw-text-opacity: 1;
+  color: rgb(125 79 254 / var(--tw-text-opacity));
 }
 
 .text-red-600 {
@@ -595,17 +652,27 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-body{
-  min-height: 100vh;
-  background-color: aqua;
+@font-face {
+  font-family: "NexaHeavy";
+
+  src: url(/static/fonts/Nexa-Heavy.ttf);
 }
 
-.footer{
-  position:static;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  padding: 1rem;
-  text-align: center;
-  margin-top: auto;
+@font-face {
+  font-family: "NexaLight";
+
+  src: url(/static/fonts/Nexa-ExtraLight.ttf);
+}
+
+body{
+  min-height: 100vh;
+  background-color: black;
+}
+
+.font-heavy{
+  font-family: 'NexaHeavy';
+}
+
+.font-light{
+  font-family: 'NexaLight';
 }

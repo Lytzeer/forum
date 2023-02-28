@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var filedb string = "./database/forum.db"
+var filedb string = "./database/database.db"
 
 func Register(name string, mail string, password string, confpass string) string {
 	if name == "" || mail == "" || password == "" || confpass == "" {

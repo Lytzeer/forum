@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var filedb string = "./database/forum.db"
+var filedb string = "./database/database.db"
 
 func Login(username string, password string) string {
 	if username == "" || password == "" {

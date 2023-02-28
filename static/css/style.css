@@ -1,18 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+    font-family: "NexaHeavy";
+    src: url(/static/fonts/Nexa-Heavy.ttf);
+}
+@font-face {
+    font-family: "NexaLight";
+    src: url(/static/fonts/Nexa-ExtraLight.ttf);
+}
 
 body{
     min-height: 100vh;
-    background-color: aqua;
+    background-color: black;
 }
-
-.footer{
-    position:static;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    padding: 1rem;
-    text-align: center;
-    margin-top: auto;
+.font-heavy{
+    font-family: 'NexaHeavy';
+}
+.font-light{
+    font-family: 'NexaLight';
 }

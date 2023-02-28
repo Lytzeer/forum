@@ -2,14 +2,13 @@ package forum
 
 import (
 	"database/sql"
-	"fmt"
 	fd "forum/Datas"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var filedb string = "./database/forum.db"
+var filedb string = "./database/database.db"
 
 func GetTopics() []fd.Topic {
 	db, err := sql.Open("sqlite3", filedb)
@@ -24,11 +23,11 @@ func GetTopics() []fd.Topic {
 	var topics []fd.Topic
 	for rows.Next() {
 		var topic fd.Topic
-		err := rows.Scan(&topic.TopicID, &topic.TopicTitle, &topic.TopicDate, &topic.TopicCreatorID)
+		err := rows.Scan(&topic.TopicID, &topic.TopicTitle, &topic.TopicMessage, &topic.TopicTime, &topic.TopicAuthor, &topic.TopicCategory)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(topic.TopicID, topic.TopicTitle, topic.TopicCreator, topic.TopicDate, topic.TopicCreatorID)
+		//fmt.Println(topic.TopicTitle, topic.TopicMessage, topic.TopicTime, topic.TopicAuthor, topic.TopicCategorie)
 		topics = append(topics, topic)
 	}
 	defer rows.Close()

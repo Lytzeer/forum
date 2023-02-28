@@ -7,23 +7,40 @@
     <link href="../static/dist/style.css" rel="stylesheet">
     <title>Main Page</title>
 </head>
-<body class="bg-black min-h-screen text-white">
-    <div class="flex justify-end gap-1">
-        <a href="/login">
-            <button>Login</button>
-        </a>
-        <a href="/register">
-            <button>Register</button>
-        </a>
+<body>
+    <div class="bg-white gap-1 text-black">
+        <div class="mx-4 flex justify-between">
+            <a href="/login">
+                <button>Login</button>
+            </a>
+            <a href="/register">
+                <button>Register</button>
+            </a>
+            <a href="/create">
+                <button>Create</button>
+            </a>
+            <a href="/infos">
+                <button>un post random</button>
+            </a>
+            <a href="/profile">
+                <img src="/static/pics/account.svg" class="w-10 h-10"/>
+            </a>
+        </div>
     </div>
-    <p>--------------</p>
-    {{ range . }}       
-        <p>{{ .TopicID }}</p>
-        <p>{{ .TopicCreator }}</p>
-        <p>{{ .TopicTitle }}</p>
-        <p>{{ .TopicDate }}</p>
-        <p>--------------</p>
-    {{ end }}
-    <footer class="footer">Mathéo LANG | Timothée DURAN | Lukas Portier</footer>
+    <div class="grid grid-cols-3 grid-rows-3">
+        <div class="text-purp flex flex-col col-start-2 row-span-2  text-center">
+            <p>--------------</p>
+            {{ range . }}       
+                <p>{{ .TopicID }}</p>
+                <p>{{ .TopicTitle }}</p>
+                <p>{{ .TopicMessage }}</p>
+                <p>{{ .TopicAuthor }}</p>
+                <p>{{ .TopicTime }}</p>
+                <p>{{ .TopicCategory }}</p>
+                <p>--------------</p>
+            {{ end }}
+        </div>
+    </div>
+    <footer class="text-purp flex justify-center static">UwU</footer>
 </body>
 </html>

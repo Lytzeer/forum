@@ -1,9 +1,10 @@
 package forum
 
 type Topic struct {
-	TopicCreator   string
-	TopicCreatorID int
-	TopicTitle     string
-	TopicDate      string
-	TopicID        int
+	TopicID       int
+	TopicTitle    string
+	TopicMessage  string
+	TopicTime     string
+	TopicAuthor   string
+	TopicCategory string
 }
