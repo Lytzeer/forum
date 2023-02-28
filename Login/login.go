@@ -11,9 +11,9 @@ import (
 
 var filedb string = "./database/forum.db"
 
-func Login(username string, password string) int {
+func Login(username string, password string) string {
 	if username == "" || password == "" {
-		return 1
+		return "Please fill all the fields"
 	} else {
 		db, err := sql.Open("sqlite3", filedb)
 		if err != nil {
@@ -41,10 +41,10 @@ func Login(username string, password string) int {
 			fmt.Println(username_db, email_db, password_db)
 		}
 		if username_db == "" || email_db == "" || password_db == "" {
-			return 2
+			return "Wrong username or password"
 		}
 		rows.Close()
-		return 0
+		return "Login successful"
 	}
 
 }

@@ -11,9 +11,9 @@ import (
 
 var filedb string = "./database/forum.db"
 
-func Register(name string, mail string, password string, confpass string) int {
+func Register(name string, mail string, password string, confpass string) string {
 	if name == "" || mail == "" || password == "" || confpass == "" {
-		return 1
+		return "Please fill all the fields"
 	} else {
 		db, err := sql.Open("sqlite3", filedb)
 		if err != nil {
@@ -47,10 +47,10 @@ func Register(name string, mail string, password string, confpass string) int {
 				}
 				request_register.Exec()
 			} else {
-				return 2
+				return "Passwords don't match"
 			}
 		}
-		return 0
+		return "Register successful"
 
 	}
 

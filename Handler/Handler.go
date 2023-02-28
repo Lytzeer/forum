@@ -54,8 +54,8 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	mail := r.FormValue("mail-name")
 	passwordr := r.FormValue("password-login")
 	confipass := r.FormValue("conf-password-login")
-	fr.Register(namer, mail, passwordr, confipass)
-	err := tmpl.Execute(w, nil)
+	t.Leprobleme = fr.Register(namer, mail, passwordr, confipass)
+	err := tmpl.Execute(w, t)
 	if err != nil {
 		fmt.Println(err)
 		fmt.Fprintln(w, err)
@@ -70,28 +70,11 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	cucu.User_name = name
 	var tmpl *template.Template
 	tmpl = template.Must(template.ParseFiles("./static/login.html"))
-	val := fl.Login(name, password)
-	if val == 1 {
-		t.Leprobleme = "Invalid Username or Password"
-		err := tmpl.Execute(w, t)
-		if err != nil {
-			fmt.Println(err)
-			fmt.Fprintln(w, err)
-		}
-	} else if val == 2 {
-		t.Leprobleme = "kk c fo"
-		err := tmpl.Execute(w, t)
-		if err != nil {
-			fmt.Println(err)
-			fmt.Fprintln(w, err)
-		}
-	} else {
-		t.Leprobleme = "Login Successful"
-		err := tmpl.Execute(w, t)
-		if err != nil {
-			fmt.Println(err)
-			fmt.Fprintln(w, err)
-		}
+	t.Leprobleme = fl.Login(name, password)
+	err := tmpl.Execute(w, t)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Fprintln(w, err)
 	}
 	return
 }
