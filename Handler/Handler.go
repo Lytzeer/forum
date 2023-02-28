@@ -2,11 +2,8 @@ package forum
 
 import (
 	"fmt"
-	fcr "forum/Create"
 	fd "forum/Datas"
-	fl "forum/Login"
-	fr "forum/Register"
-	ft "forum/Topic"
+	ff "forum/Funcs"
 	"html/template"
 	"net/http"
 )
@@ -19,48 +16,37 @@ type displayerror struct {
 var t displayerror
 var cucu fd.User
 var Topics []fd.Topic
+var TopComment []fd.Topic
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("cucu", cucu, cucu.User_name)
-	// cucu.User_name = ""
-	// cucu.Email = ""
-	fmt.Println("cucu", cucu, cucu.User_name)
-	Topics = ft.GetTopics()
-	fmt.Println(Topics)
+	Topics = ff.GetTopics()
 	var tmpl *template.Template
 	tmpl = template.Must(template.ParseFiles("./static/index.html"))
 	err := tmpl.Execute(w, Topics)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Fprintln(w, err)
-	}
+	ff.CheckErr(err)
 	return
 }
 
 func HandleCreate(w http.ResponseWriter, r *http.Request) {
 	var tmpl *template.Template
-	var a string
 	if cucu.User_name == "" {
 		tmpl = template.Must(template.ParseFiles("./static/login.html"))
 	} else {
+		var a string
 		tmpl = template.Must(template.ParseFiles("./static/create.html"))
 		title := r.FormValue("title")
 		message := r.FormValue("content")
 		categorie := r.FormValue("checkbox")
-		fmt.Println("title", title, "message", message, "categorie", categorie, "user", cucu.User_name)
-
-		a := fcr.Create(message, cucu.User_name, title, categorie)
+		a = ff.Create(message, cucu.User_name, title, categorie)
 		fmt.Println(a)
+		if a == "Topic created" {
+			tmpl = template.Must(template.ParseFiles("./static/index.html"))
+		} else {
+			tmpl = template.Must(template.ParseFiles("./static/create.html"))
+		}
 	}
-	if a == "Topic created" {
-		tmpl = template.Must(template.ParseFiles("./static/index.html"))
-	}
-
 	err := tmpl.Execute(w, nil)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Fprintln(w, err)
-	}
+	ff.CheckErr(err)
 	return
 }
 
@@ -71,15 +57,12 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	mail := r.FormValue("mail-name")
 	passwordr := r.FormValue("password-login")
 	confipass := r.FormValue("conf-password-login")
-	t.Leprobleme = fr.Register(namer, mail, passwordr, confipass)
+	t.Leprobleme = ff.Register(namer, mail, passwordr, confipass)
 	if t.Leprobleme == "Register successful" {
 		tmpl = template.Must(template.ParseFiles("./static/login.html"))
 	}
 	err := tmpl.Execute(w, t)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Fprintln(w, err)
-	}
+	ff.CheckErr(err)
 	return
 }
 
@@ -90,7 +73,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	cucu.User_name = name
 	fmt.Println("name", cucu.User_name, "password", password)
 	var tmpl *template.Template
-	t.Leprobleme = fl.Login(name, password)
+	t.Leprobleme = ff.Login(name, password)
 	if t.Leprobleme == "Login successful" {
 		tmpl = template.Must(template.ParseFiles("./static/profile.html"))
 		t.Leprobleme = ""
@@ -99,10 +82,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		t.Leprobleme = ""
 	}
 	err := tmpl.Execute(w, t)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Fprintln(w, err)
-	}
+	ff.CheckErr(err)
 	return
 }
 
@@ -113,27 +93,30 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 	// } else {
 	tmpl = template.Must(template.ParseFiles("./static/profile.html"))
 	err := tmpl.Execute(w, nil)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Fprintln(w, err)
-	}
+	ff.CheckErr(err)
 	return
 	// }
 }
 
-func HandleInfos(w http.ResponseWriter, r *http.Request) {
+func HandleComment(w http.ResponseWriter, r *http.Request) {
 	var tmpl *template.Template
-	// if cucu.User_name == "" {
-	// 	tmpl = template.Must(template.ParseFiles("./static/login.html"))
-	// } else {
+	if cucu.User_name == "" {
+		tmpl = template.Must(template.ParseFiles("./static/login.html"))
+	} else {
+		tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+		err := tmpl.Execute(w, nil)
+		ff.CheckErr(err)
+		return
+	}
+}
+
+func HandleInfos(w http.ResponseWriter, r *http.Request) {
+	// TopComment = ff.GetOneTopics(1)
+	var tmpl *template.Template
 	tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 	err := tmpl.Execute(w, nil)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Fprintln(w, err)
-	}
+	ff.CheckErr(err)
 	return
-	// }
 }
 
 func HandleLogout(w http.ResponseWriter, r *http.Request) {
@@ -141,10 +124,7 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 	tmpl = template.Must(template.ParseFiles("./static/index.html"))
 	cucu.User_name = ""
 	err := tmpl.Execute(w, nil)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Fprintln(w, err)
-	}
+	ff.CheckErr(err)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return
 }
