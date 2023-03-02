@@ -6,7 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func AddComment(phrase string, user string, id int) string {
+func AddComment(phrase string, user string, commentid int) string {
 	if phrase == "" || user == "" {
 		return "Empty field"
 	} else {
@@ -16,7 +16,25 @@ func AddComment(phrase string, user string, id int) string {
 		stmt, err := db.Prepare("INSERT INTO Comments(title, like, dislike,topicid) VALUES (?,?,?,?)")
 		CheckErr(err)
 		defer stmt.Close()
-		_, err = stmt.Exec(phrase, 0, 0, id)
+		_, err = stmt.Exec(phrase, 0, 0, commentid)
+		CheckErr(err)
+
+		return "Comment added"
+	}
+}
+
+func ModifyComment(phrase string, user string, commentid int) string {
+	// if user == creator id
+	if phrase == "" || user == "" {
+		return "Empty field"
+	} else {
+		db, err := sql.Open("sqlite3", filedb)
+		CheckErr(err)
+		defer db.Close()
+		stmt, err := db.Prepare("UPDATE Comments SET title = ? WHERE id = ?")
+		CheckErr(err)
+		defer stmt.Close()
+		_, err = stmt.Exec(phrase, commentid)
 		CheckErr(err)
 
 		return "Comment added"
