@@ -19,6 +19,13 @@ var Topics []fd.Topic
 var TopComment []fd.Topic
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
+	// if cucu.SignOut == false {
+	// 	token, err := r.Cookie("session")
+	// 	ff.CheckErr(err)
+	// 	fmt.Println(token.Value)
+	// 	cucu.Id, cucu.User_name, cucu.Token = ff.CheckToken(token.Value)
+	// 	fmt.Println(cucu.Token)
+	// }
 	if r.URL.Path != "/" {
 		ff.Error404(w, r)
 		return
@@ -38,7 +45,7 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		var tmpl *template.Template
-		if cucu.User_name == "" {
+		if cucu.Token == "" {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 		} else {
 			var a string
@@ -47,7 +54,6 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 			message := r.FormValue("content")
 			categorie := r.FormValue("checkbox")
 			a = ff.Create(message, cucu.User_name, title, categorie)
-			fmt.Println(a)
 			if a == "Topic created" {
 				tmpl = template.Must(template.ParseFiles("./static/index.html"))
 			} else {
@@ -82,9 +88,6 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
-	// a, err := r.Cookie("session")
-	// ff.CheckErr(err)
-	// fmt.Println(a)
 	if r.URL.Path != "/login" {
 		ff.Error404(w, r)
 		return
@@ -113,17 +116,20 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		var tmpl *template.Template
-		tmpl = template.Must(template.ParseFiles("./static/profile.html"))
-		err := tmpl.Execute(w, nil)
-		ff.CheckErr(err)
-		return
+		if cucu.Token == "" {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/profile.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		}
 	}
-	// if cucu.User_name == "" {
-	// 	tmpl = template.Must(template.ParseFiles("./static/login.html"))
-	// } else {
-
-	// }
 }
 
 func HandleComment(w http.ResponseWriter, r *http.Request) {
@@ -156,8 +162,6 @@ func HandleInfos(w http.ResponseWriter, r *http.Request) {
 		ff.CheckErr(err)
 		return
 	}
-	// TopComment = ff.GetOneTopics(1)
-	// get id of topic
 }
 
 func HandleLogout(w http.ResponseWriter, r *http.Request) {
@@ -165,11 +169,12 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		var tmpl *template.Template
-		tmpl = template.Must(template.ParseFiles("./static/index.html"))
 		cucu.User_name = ""
 		cucu.Token = ""
+		cucu.SignOut = true
 		ff.DeleteCookie(w, r)
+		var tmpl *template.Template
+		tmpl = template.Must(template.ParseFiles("./static/index.html"))
 		err := tmpl.Execute(w, nil)
 		ff.CheckErr(err)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -195,10 +200,46 @@ func HandleEditProfile(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		var tmpl *template.Template
-		tmpl = template.Must(template.ParseFiles("./static/editprofile.html"))
-		err := tmpl.Execute(w, nil)
-		ff.CheckErr(err)
+		if cucu.Token == "" {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			newemail := r.FormValue("newemail")
+			confemail := r.FormValue("confnewemail")
+			currentpassword := r.FormValue("currentpassword")
+			newpassword := r.FormValue("newpassword")
+			confnewpassword := r.FormValue("confnewpassword")
+			newusername := r.FormValue("newusername")
+			fmt.Println(newemail, confemail, currentpassword, newpassword, confnewpassword, newusername)
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/editprofile.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleNotif(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/notif" {
+		ff.Error404(w, r)
 		return
+	} else {
+		if cucu.Token == "" {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/notif.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		}
 	}
 }

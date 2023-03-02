@@ -18,6 +18,7 @@ func main() {
 	http.HandleFunc("/info", fh.HandleInfos)
 	http.HandleFunc("/test", fh.HandleTest)
 	http.HandleFunc("/editprofile", fh.HandleEditProfile)
+	http.HandleFunc("/notif", fh.HandleNotif)
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	http.ListenAndServe(":8080", nil)

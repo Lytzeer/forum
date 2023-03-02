@@ -22,7 +22,7 @@ func DeleteTopic(user string, topicID int) string {
 		if usr != user {
 			return "je mange mon caca"
 		} else {
-			request_delete_comments, err := db.Prepare("DELETE FROM Comments WHERE topicid=?")
+			request_delete_comments, err := db.Prepare("DELETE FROM Topics WHERE id=?")
 			CheckErr(err)
 			request_delete_comments.Exec(topicID)
 			db.Close()

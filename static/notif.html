@@ -1,19 +1,39 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../static/dist/style.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/static/pics/Forum Logo.svg">
-    <title>Main Page</title>
+    <title>Notifications</title>
 </head>
 <body>
-    <div class="bg-white gap-1 text-black">
-        <div class="mx-4 flex justify-between">
-            
+    <div class="top-logo flex justify-between mx-1">
+        <div class="flex">
+            <a href="/">
+                <img src="/static/pics/Forum Logo.svg" alt="Forum Logo" class="mt-1 mx-3">
+            </a>
+        </div>
+        <div class="flex">
+            <a href="/profile">
+                <img src="/static/pics/account.svg" alt="Account Logo" class="mt-1 mx-3">
+            </a>
         </div>
     </div>
-    <footer class="text-purp flex justify-center static">UwU</footer>
+    <div class="title flex items-center flex-col mt-8">
+        <h1 class="nexa-heavy text-white text-8xl">Notifications</h1>
+        <div class="text-white nexa-heavy text-2xl mt-2">You can watch your <span class="text-purp">notifications</span> !</div>
+    </div>
+    <div class="grid grid-cols-3 grid-rows-1">
+        <div class="text-white nexa-heavy text-base col-start-2 flex justify-center flex-col ml-5 mt-24">
+            <span class="mb-2 text-center ml-5 mt-24">Your <span class="text-purp">Notifications</span> :</span>
+            <span class="text-white nexa-light border-2 border-purp rounded-xl pl-1 my-1">Lewis Hamilton liked your post</span>
+            <span class="text-white nexa-light border-2 border-purp rounded-xl pl-1 my-1">Max Verstappen disliked your post</span>
+            <span class="text-white nexa-light border-2 border-purp rounded-xl pl-1 my-1">Guanyu Zhou commented your post</span>
+        </div>
+        <div class="content grid grid-cols-3 grid-rows-1 mt-10">
+        </div>
+    </div>
 </body>
 </html>
