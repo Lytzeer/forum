@@ -27,10 +27,10 @@ func Register(name string, mail string, password string, confpass string) string
 			CheckErr(err)
 		}
 		rows.Close()
-
+		token := "0"
 		if count == 0 {
 			if err := bcrypt.CompareHashAndPassword(hash, []byte(confpass)); err == nil {
-				request_register, err := db.Prepare("INSERT INTO User (username,email, password) VALUES ('" + name + "', '" + mail + "', '" + string(hash) + "')")
+				request_register, err := db.Prepare("INSERT INTO User (username,email, password,token) VALUES ('" + name + "', '" + mail + "', '" + string(hash) + "', '" + token + "')")
 				CheckErr(err)
 				request_register.Exec()
 			} else {

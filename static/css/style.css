@@ -14,9 +14,14 @@ body{
     min-height: 100vh;
     background-color: black;
 }
-.font-heavy{
+.nexa-heavy{
     font-family: 'NexaHeavy';
 }
-.font-light{
+.nexa-light{
     font-family: 'NexaLight';
+}
+
+.text-10xl {
+    font-size: 16rem;
+    line-height: 1;
 }

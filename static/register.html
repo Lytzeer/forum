@@ -1,33 +1,47 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/static/dist/style.css" rel="stylesheet">
+    <link href="../static/dist/style.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/static/pics/Forum Logo.svg">
     <title>Register</title>
 </head>
-<body class="grid grid-cols-3 grid-rows-3">
-    <div class="col-start-2 row-start-2  text-center">
-        <form action="/register" method="get">
-            <div class="flex flex-col border-2 border-black rounded-xl text-purp">
-                <span>Name :</span>
-                <input type="text" name="name" id="name">
-                <span>Mail :</span>
-                <input type="email" name="mail-name" id="mail-name">
-                <span>Password :</span>
-                <input type="password" name="password-login" id="password-login">
-                <span>Confirm password :</span>
-                <input type="password" name="conf-password-login" id="conf-password-login">
-                <a href="/">
-                <button type="submit" class="bg-gray-400 text-red-600 border-2 border-black">
-                    <span>
-                        Register
-                    </span>
-                </button>
-                </a>
-            </div>
-        </form>
+<body>
+    <div class="top-logo flex justify-between mx-1">
+        <a href="/">
+            <img src="/static/pics/Forum Logo.svg" alt="Forum Logo" class="mt-1">
+        </a>
     </div>
+    <div class="title flex items-center flex-col mt-8">
+        <h1 class="nexa-heavy text-white text-8xl">Register</h1>
+        <div class="text-white nexa-heavy text-2xl mt-2">Create your <span class="text-purp">account</span> !</div>
+    </div>
+    <form action="/register" method="post">
+    <div class="content grid grid-cols-3 grid-rows-1 mt-10">
+        <div class="text-white nexa-heavy text-base col-start-2 flex flex-col ml-5 mt-32">
+            <span>
+                Username :
+            </span>
+            <input type="text" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="name" name="name">
+            <span>
+                E-mail :
+            </span>
+            <input type="email" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="mail" name="mail">
+            <span>
+                Password :
+            </span>
+            <input type="password" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="password-register" name="password-register">
+            <span>
+                Confirm Password :
+            </span>
+            <input type="password" class="rounded-2xl bg-bgray text-black pl-2" id="conf-password-register" name="conf-password-register">
+            <div class="button mt-10 flex justify-around text-purp">
+                <button class="bg-bgray flex justify-center rounded-2xl w-24" type="submit" name="login">Create</button>
+            </div>
+        </div>
+    </div>
+</form>
 </body>
 </html>

@@ -1,25 +1,44 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/static/dist/style.css" rel="stylesheet">
+    <link href="../static/dist/style.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/static/pics/Forum Logo.svg">
     <title>Login</title>
 </head>
-<body class="grid grid-cols-3 grid-rows-3">
-    <div class="col-start-2 row-start-2  text-center">
-        <form action="/login" method="post">
-            <div class="flex flex-col border-2 border-red-600 rounded-xl text-purp">
-                <span>Name or Mail :</span>
-                <input type="text" name="mail-name" id="mail-name">
-                <span>Password :</span>
-                <input type="password" name="password-login" id="password-login">
-                <button name="submitlogin" type="submit" class="bg-gray-400 border-2 border-red-600">Submit</button>
-                <p class="test" id="feur" name="kk">{{ .Leprobleme }}</p>
+<body>
+    <div class="top-logo flex justify-between mx-1">
+        <a href="/">
+            <img src="/static/pics/Forum Logo.svg" alt="Forum Logo" class="mt-1">
+        </a>
+    </div>
+    <div class="title flex items-center flex-col mt-8">
+        <h1 class="nexa-heavy text-white text-8xl">Login</h1>
+        <div class="text-white nexa-heavy text-2xl mt-2">Connect to your <span class="text-purp">account</span> !</div>
+    </div>
+    <form action="/login" method="post">
+    <div class="content grid grid-cols-3 grid-rows-1 mt-10">
+        <div class="text-white nexa-heavy text-base col-start-2 flex flex-col ml-5 mt-32">
+            <span>
+                Username or E-mail :
+            </span>
+            <input type="text" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="mail-name" name="mail-name" autofocus>
+            <span>
+                Password :
+            </span>
+            <input type="password" class="rounded-2xl bg-bgray text-black pl-2" id="password-login" name="password-login">
+            <div class="button mt-10 flex justify-around text-purp">
+                <!-- <a href="/profile"> -->
+                    <button class="bg-bgray flex justify-center rounded-2xl w-24 pl-2" type="submit" id="login" name="login">Login</button>
+                <!-- </a> -->
+            </form>
+                <a href="/register">
+                    <button class="bg-bgray flex justify-center rounded-2xl w-24" name="register">Register</button>
+                </a>
             </div>
-        </form>
+        </div>
     </div>
 </body>
 </html>

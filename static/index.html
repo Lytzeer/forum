@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,39 +9,33 @@
     <title>Main Page</title>
 </head>
 <body>
-    <div class="bg-white gap-1 text-black">
-        <div class="mx-4 flex justify-between">
-            <a href="/login">
-                <button>Login</button>
-            </a>
-            <a href="/register">
-                <button>Register</button>
-            </a>
-            <a href="/create">
-                <button>Create</button>
-            </a>
-            <a href="/info">
-                <button>un post random</button>
-            </a>
-            <a href="/profile">
-                <img src="/static/pics/account.svg" class="w-10 h-10"/>
-            </a>
+    <div class="top-logo flex justify-between mx-1">
+        <img src="/static/pics/Forum Logo.svg" alt="Forum Logo" class="mt-1">
+        <a href="/profile">
+            <img src="/static/pics/account.svg" alt="Account" class="mt-1">
+        </a>
+    </div>
+    <div class="title flex items-center flex-col mt-8">
+        <h1 class="nexa-heavy text-white text-8xl">Forum</h1>
+        <div class="text-purp nexa-heavy text-2xl">Welcome</div>
+    </div>
+    <div class="content grid grid-cols-3 grid-rows-1 mt-10">
+        <div class="text-white nexa-heavy text-base col-start-1 ml-5">Filter :</div>
+        <div class="text-white nexa-heavy text-base col-start-2 col-end-3 ml-5 flex flex-col">
+            <span>Topics :</span>
+            {{ range .}}
+            <button value="{{ .TopicID }}">
+                <div class="flex flex-col border-white border-2 rounded-2xl mt-1">
+                    <div class="info flex nexa-light">
+                        <span class="flex text-purp mt-2 ml-1">Create by: {{.TopicAuthor}} | </span>
+                        <span class="flex text-purp mt-2 ml-1">{{ .TopicTime}}</span>
+                    </div>
+                    <span class="text-purp mt-1">{{ .TopicTitle }}</span>
+                    <span class="mb-4">{{ .TopicMessage }}</span>
+                </div>
+            </button>
+            {{end}}
         </div>
     </div>
-    <div class="grid grid-cols-3 grid-rows-3">
-        <div class="text-purp flex flex-col col-start-2 row-span-2  text-center">
-            <p>--------------</p>
-            {{ range . }}       
-                <p>{{ .TopicID }}</p>
-                <p>{{ .TopicTitle }}</p>
-                <p>{{ .TopicMessage }}</p>
-                <p>{{ .TopicAuthor }}</p>
-                <p>{{ .TopicTime }}</p>
-                <p>{{ .TopicCategory }}</p>
-                <p>--------------</p>
-            {{ end }}
-        </div>
-    </div>
-    <footer class="text-purp flex justify-center static">UwU</footer>
 </body>
 </html>

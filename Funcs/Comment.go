@@ -22,21 +22,3 @@ func AddComment(phrase string, user string, commentid int) string {
 		return "Comment added"
 	}
 }
-
-func ModifyComment(phrase string, user string, commentid int) string {
-	// if user == creator id
-	if phrase == "" || user == "" {
-		return "Empty field"
-	} else {
-		db, err := sql.Open("sqlite3", filedb)
-		CheckErr(err)
-		defer db.Close()
-		stmt, err := db.Prepare("UPDATE Comments SET title = ? WHERE id = ?")
-		CheckErr(err)
-		defer stmt.Close()
-		_, err = stmt.Exec(phrase, commentid)
-		CheckErr(err)
-
-		return "Comment added"
-	}
-}

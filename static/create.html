@@ -1,4 +1,42 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../static/dist/style.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/static/pics/Forum Logo.svg">
+    <title>Create Topic</title>
+</head>
+<body>
+    <div class="top-logo flex justify-between mx-1">
+        <a href="/">
+            <img src="/static/pics/Forum Logo.svg" alt="Forum Logo" class="mt-1">
+        </a>
+    </div>
+    <div class="title flex items-center flex-col mt-8">
+        <h1 class="nexa-heavy text-white text-8xl">Create Topic</h1>
+        <div class="text-white nexa-heavy text-2xl mt-2">You can create you <span class="text-purp">own topic</span> !</div>
+    </div>
+    <div class="content mt-20 text-white nexa-heavy grid grid-cols-2 grid-rows-1 gap-8">
+        <div class="topic-title flex flex-col col-start-1 ml-16">
+            <span class="col-start-1">Title :</span>
+            <input type="text" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="title" name="title" required placeholder="Enter title here ...">
+        </div>
+        <div class="topic-categories flex flex-col col-start-2 mr-16">
+        <span class="col-start-2">Categories :</span>
+        </div> 
+    </div>
+    <div class="text-black nexa-heavy flex flex-col mx-16 mt-10">
+        <span class="text-white">Message :</span>
+        <textarea class="rounded-2xl bg-bgray h-96 pl-2" id="message" name="message" required></textarea>
+    </div>
+    <div class="flex justify-center mt-10">
+        <button class="bg-bgray flex justify-center rounded-2xl w-24 text-purp nexa-heavy" type="submit" name="create-topic">Create</button>
+    </div>
+</body>
+</html>
+<!-- <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -33,4 +71,4 @@
         </form>
     </div>
 </body>
-</html>
+</html> -->
