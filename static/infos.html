@@ -42,7 +42,7 @@
         <div class="flex flex-row text-white ml-2">
             <span class="nexa-light">{{.CreatorName}}</span>
             <span class="nexa-heavy ml-2">{{.Title}}</span>
-            <form action="/like" method="post">
+            <form action="/like" method="get">
                 <div class="flex items-center px-2">
                     <button class="" value="{{.Id}}" name="like">
                         <img src="/static/pics/like.svg" alt="Like Logo" class="my-1 w-6 h-6">
@@ -50,7 +50,7 @@
                     <span class="text-white nexa-light pl-2">{{.Likes}}</span>
                 </div>
             </form>
-            <form action="/dislike" method="post" class="flex flex-row">
+            <form action="/dislike" method="get" class="flex flex-row">
                 <div class="flex items-center px-2">
                     <button class="" value="{{.Id}}" name="dislike">
                         <img src="/static/pics/dislike.svg" alt="Dislike Logo" class="my-1 w-6 h-6">
@@ -58,7 +58,7 @@
                     <span class="text-white nexa-light pl-2">{{.Dislikes}}</span>
                 </div>
             </form>
-            <form action="/delcomment" method="post">
+            <form action="/delcomment" method="get">
                 <div class="flex items-center px-2">
                     <button class="" value="{{.Id}}" name="delete">
                         <img src="/static/pics/delete.svg" alt="Delete Logo" class="my-1">
@@ -68,7 +68,7 @@
             </form>
         {{end}}
     </div>
-    <form action="/addcomment" method="post">
+    <form action="/addcomment" method="get">
     <div class="flex flex-col mx-72 mt-4">
         <span class="text-white nexa-heavy mb-2">Add Comment :</span>
         <textarea class="h-96 rounded-2xl bg-bgray pl-2 nexa-heavy" id="message" name="message" placeholder="Enter your comment here ..."></textarea>

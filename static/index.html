@@ -33,7 +33,7 @@
         <div class="text-white nexa-heavy text-base col-start-2 col-end-3 ml-5 flex flex-col">
             <span>Topics :</span>
             {{ range .}}
-            <form action="/infos" method="post">
+            <form action="/infos" method="get">
             <button value="{{ .TopicID }}" name="id">
                 <div class="flex flex-col border-white border-2 rounded-2xl mt-1">
                     <div class="info flex nexa-light">

@@ -14,17 +14,17 @@ type displayerror struct {
 }
 
 var t displayerror
-var cucu fd.User
+var User fd.User
 var Topics []fd.Topic
 var Topic fd.Topic
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	if cucu.SignIn == true {
+	if User.SignIn == true {
 		token, err := r.Cookie("session")
 		ff.CheckErr(err)
 		fmt.Println(token.Value)
-		cucu.Id, cucu.User_name, cucu.Email, cucu.Token = ff.CheckToken(token.Value)
-		fmt.Println(cucu.Id, cucu.User_name, cucu.Email, cucu.Token, token.Value)
+		User.Id, User.User_name, User.Email, User.Token = ff.CheckToken(token.Value)
+		fmt.Println(User.Id, User.User_name, User.Email, User.Token, token.Value)
 	}
 	if r.URL.Path != "/" {
 		ff.Error404(w, r)
@@ -45,13 +45,13 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		var tmpl *template.Template
-		if cucu.Token == "" {
+		if User.Token == "" {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 		} else {
 			tmpl = template.Must(template.ParseFiles("./static/create.html"))
 			title, message, categorie := r.FormValue("title"), r.FormValue("message"), r.FormValue("checkbox")
 			fmt.Println(title, message, categorie)
-			t.Leprobleme = ff.Create(message, cucu.User_name, title, "sport")
+			t.Leprobleme = ff.Create(message, User.User_name, title, "sport")
 			if t.Leprobleme == "Topic created" {
 				tmpl = template.Must(template.ParseFiles("./static/index.html"))
 			} else {
@@ -88,14 +88,14 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		name, password := r.FormValue("mail-name"), r.FormValue("password-login")
-		cucu.User_name = name
+		User.User_name = name
 		var tmpl *template.Template
 		t.Leprobleme = ff.Login(name, password)
 		if t.Leprobleme == "Login successful" {
 			tmpl = template.Must(template.ParseFiles("./static/profile.html"))
 			t.Leprobleme = ""
-			cucu.Token = ff.SetCookie(w, r, cucu.User_name)
-			err := tmpl.Execute(w, cucu)
+			User.Token = ff.SetCookie(w, r, User.User_name)
+			err := tmpl.Execute(w, User)
 			ff.CheckErr(err)
 		} else {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
@@ -112,7 +112,7 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		if cucu.Token == "" {
+		if User.Token == "" {
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
@@ -121,7 +121,7 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 		} else {
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/profile.html"))
-			err := tmpl.Execute(w, cucu)
+			err := tmpl.Execute(w, User)
 			ff.CheckErr(err)
 			return
 		}
@@ -134,15 +134,17 @@ func HandleAddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		var tmpl *template.Template
-		if cucu.Token == "" {
+		if User.Token == "" {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
 			ff.CheckErr(err)
 			return
 		} else {
 			comment := r.FormValue("message")
-			ff.AddComment(comment, cucu.User_name, Topic.TopicID)
+			ff.AddComment(comment, User.User_name, Topic.TopicID)
+			Topic = ff.GetOneTopics(Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
 			return
@@ -156,7 +158,7 @@ func HandleDeleteComment(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		var tmpl *template.Template
-		if cucu.Token == "" {
+		if User.Token == "" {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
 			ff.CheckErr(err)
@@ -164,8 +166,10 @@ func HandleDeleteComment(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("delete")
 			idstr, _ := strconv.Atoi(id)
-			ff.DeleteComment(cucu.User_name, idstr)
+			ff.DeleteComment(User.User_name, idstr)
+			Topic = ff.GetOneTopics(Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
 			return
@@ -179,14 +183,14 @@ func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		var tmpl *template.Template
-		if cucu.Token == "" {
+		if User.Token == "" {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
 			ff.CheckErr(err)
 			return
 		} else {
 			comment := r.FormValue("message")
-			ff.ModifyComment(comment, cucu.User_name, Topic.TopicID)
+			ff.ModifyComment(comment, User.User_name, Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
@@ -201,7 +205,7 @@ func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		var tmpl *template.Template
-		if cucu.Token == "" {
+		if User.Token == "" {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
 			ff.CheckErr(err)
@@ -209,7 +213,7 @@ func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("delete")
 			idstr, _ := strconv.Atoi(id)
-			ff.DeleteTopic(cucu.User_name, idstr)
+			ff.DeleteTopic(User.User_name, idstr)
 			Topics = ff.GetTopics()
 			tmpl = template.Must(template.ParseFiles("./static/index.html"))
 			err := tmpl.Execute(w, Topics)
@@ -225,14 +229,14 @@ func HandleModifyTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		var tmpl *template.Template
-		if cucu.Token == "" {
+		if User.Token == "" {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
 			ff.CheckErr(err)
 			return
 		} else {
 			comment := r.FormValue("message")
-			ff.ModifyComment(comment, cucu.User_name, Topic.TopicID)
+			ff.ModifyComment(comment, User.User_name, Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/index.html"))
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
@@ -264,10 +268,10 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		cucu.User_name = ""
-		cucu.Token = ""
-		cucu.SignIn = true
-		cucu.Id = 0
+		User.User_name = ""
+		User.Token = ""
+		User.SignIn = true
+		User.Id = 0
 		ff.DeleteCookie(w, r)
 		var tmpl *template.Template
 		tmpl = template.Must(template.ParseFiles("./static/index.html"))
@@ -296,7 +300,7 @@ func HandleEditProfile(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		if cucu.Token == "" {
+		if User.Token == "" {
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
@@ -306,17 +310,17 @@ func HandleEditProfile(w http.ResponseWriter, r *http.Request) {
 			newemail, confemail, currentpassword, newpassword, confnewpassword, newusername := r.FormValue("newemail"), r.FormValue("confemail"), r.FormValue("currentpassword"), r.FormValue("newpassword"), r.FormValue("confnewpassword"), r.FormValue("newusername")
 			fmt.Println(newemail, confemail, currentpassword, newpassword, confnewpassword, newusername)
 			if newemail != "" && confemail != "" {
-				ff.EditMail(cucu.Id, newemail, confemail)
+				ff.EditMail(User.Id, newemail, confemail)
 			}
 			if currentpassword != "" && newpassword != "" && confnewpassword != "" {
-				ff.EditPassword(cucu.Id, currentpassword, newpassword, confnewpassword)
+				ff.EditPassword(User.Id, currentpassword, newpassword, confnewpassword)
 			}
 			if newusername != "" {
-				ff.EditUsername(cucu.Id, newusername)
+				ff.EditUsername(User.Id, newusername)
 			}
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/editprofile.html"))
-			err := tmpl.Execute(w, cucu)
+			err := tmpl.Execute(w, User)
 			ff.CheckErr(err)
 			return
 		}
@@ -328,7 +332,7 @@ func HandleNotif(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		if cucu.Token == "" {
+		if User.Token == "" {
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
@@ -349,7 +353,7 @@ func HandleLike(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		if cucu.Token == "" {
+		if User.Token == "" {
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
@@ -361,7 +365,9 @@ func HandleLike(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(idint)
 			ff.Like(idint)
 			var tmpl *template.Template
+			Topic = ff.GetOneTopics(Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
 			return
@@ -374,7 +380,7 @@ func HandleDislike(w http.ResponseWriter, r *http.Request) {
 		ff.Error404(w, r)
 		return
 	} else {
-		if cucu.Token == "" {
+		if User.Token == "" {
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
@@ -386,7 +392,9 @@ func HandleDislike(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(idint)
 			ff.Dislike(idint)
 			var tmpl *template.Template
+			Topic = ff.GetOneTopics(Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
 			return
