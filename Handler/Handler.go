@@ -210,8 +210,9 @@ func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
 			id := r.FormValue("delete")
 			idstr, _ := strconv.Atoi(id)
 			ff.DeleteTopic(cucu.User_name, idstr)
+			Topics = ff.GetTopics()
 			tmpl = template.Must(template.ParseFiles("./static/index.html"))
-			err := tmpl.Execute(w, Topic)
+			err := tmpl.Execute(w, Topics)
 			ff.CheckErr(err)
 			return
 		}
