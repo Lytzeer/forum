@@ -129,21 +129,21 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleComment(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/comment" {
+	if r.URL.Path != "/addcomment" {
 		ff.Error404(w, r)
 		return
 	} else {
 		var tmpl *template.Template
-		if cucu.User_name == "" {
+		if cucu.Token == "" {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 			err := tmpl.Execute(w, nil)
 			ff.CheckErr(err)
 			return
 		} else {
-			comment := r.FormValue("comment")
-			ff.AddComment(comment, cucu.User_name, 0)
+			comment := r.FormValue("message")
+			ff.AddComment(comment, cucu.User_name, Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
-			err := tmpl.Execute(w, nil)
+			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
 			return
 		}
@@ -158,6 +158,7 @@ func HandleInfos(w http.ResponseWriter, r *http.Request) {
 		id := r.FormValue("id")
 		Topic.TopicID, _ = strconv.Atoi(id)
 		Topic = ff.GetOneTopics(Topic.TopicID)
+		Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
 		var tmpl *template.Template
 		tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 		err := tmpl.Execute(w, Topic)
@@ -181,7 +182,7 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 		tmpl = template.Must(template.ParseFiles("./static/index.html"))
 		err := tmpl.Execute(w, nil)
 		ff.CheckErr(err)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/", 302)
 		return
 	}
 }
@@ -246,6 +247,54 @@ func HandleNotif(w http.ResponseWriter, r *http.Request) {
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/notif.html"))
 			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleLike(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/like" {
+		ff.Error404(w, r)
+		return
+	} else {
+		if cucu.Token == "" {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			id := r.FormValue("like")
+			idint, _ := strconv.Atoi(id)
+			ff.Like(idint)
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			err := tmpl.Execute(w, Topic)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleDislike(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/dislike" {
+		ff.Error404(w, r)
+		return
+	} else {
+		if cucu.Token == "" {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			id := r.FormValue("dislike")
+			idint, _ := strconv.Atoi(id)
+			ff.Dislike(idint)
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
 			return
 		}

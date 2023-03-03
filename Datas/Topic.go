@@ -7,4 +7,7 @@ type Topic struct {
 	TopicTime     string
 	TopicAuthor   string
 	TopicCategory string
+	Likes         int
+	Dislikes      int
+	Comments      []Comment
 }

@@ -23,13 +23,13 @@
                 <button class="">
                     <img src="/static/pics/like.svg" alt="Like Logo" class="mt-1 w-6 h-6">
                 </button>
-                <span class="text-white nexa-light pl-2">1543</span>
+                <span class="text-white nexa-light pl-2">{{.Likes}}</span>
             </div>
             <div class="flex items-center px-2">
                 <button class="">
                     <img src="/static/pics/dislike.svg" alt="Dislike Logo" class="mt-1 w-6 h-6">
                 </button>
-                <span class="text-white nexa-light pl-2">10</span>
+                <span class="text-white nexa-light pl-2">{{.Dislikes}}</span>
             </div>
         </div>
         <div class="px-2 mt-7">
@@ -38,11 +38,30 @@
         <div class="px-2 mt-7 mb-2">
             <span class="text-white nexa-heavy mt-7 text-base border-b-2">Comments :</span>
         </div>
+        {{range .Comments}}
         <div class="flex flex-row text-white ml-2">
-            <span class="nexa-light">Lewis Hamilton 03/03/2023 10:26</span>
-            <span class="nexa-heavy ml-2">I gonna win my 8th world championship</span>
+            <span class="nexa-light">{{.CreatorName}}</span>
+            <span class="nexa-heavy ml-2">{{.Title}}</span>
+            <form action="/like" method="post">
+            <div class="flex items-center px-2">
+                <button class="" value="{{.Id}}" name="like">
+                    <img src="/static/pics/like.svg" alt="Like Logo" class="my-1 w-6 h-6">
+                </button>
+                <span class="text-white nexa-light pl-2">{{.Likes}}</span>
+            </div>
+        </form>
+        <form action="/dislike" method="post">
+            <div class="flex items-center px-2">
+                <button class="" value="{{.Id}}" name="dislike">
+                    <img src="/static/pics/dislike.svg" alt="Dislike Logo" class="my-1 w-6 h-6">
+                </button>
+                <span class="text-white nexa-light pl-2">{{.Dislikes}}</span>
+            </div>
         </div>
+        </form>
+        {{end}}
     </div>
+    <form action="/addcomment" method="post">
     <div class="flex flex-col mx-72 mt-4">
         <span class="text-white nexa-heavy mb-2">Add Comment :</span>
         <textarea class="h-96 rounded-2xl bg-bgray pl-2 nexa-heavy" id="message" name="message" placeholder="Enter your comment here ..."></textarea>
@@ -50,5 +69,6 @@
     <div class="flex justify-center">
         <button class="nexa-heavy text-purp bg-bgray rounded-2xl w-24 mt-8" type="submit" name="Add Coment">Add</button>
     </div>
+</form>
 </body>
 </html>

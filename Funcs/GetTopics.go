@@ -19,7 +19,7 @@ func GetTopics() []fd.Topic {
 	var topics []fd.Topic
 	for rows.Next() {
 		var topic fd.Topic
-		err := rows.Scan(&topic.TopicID, &topic.TopicTitle, &topic.TopicMessage, &topic.TopicTime, &topic.TopicCategory, &topic.TopicAuthor)
+		err := rows.Scan(&topic.TopicID, &topic.TopicTitle, &topic.TopicMessage, &topic.TopicTime, &topic.TopicCategory, &topic.TopicAuthor, &topic.Likes, &topic.Dislikes)
 		CheckErr(err)
 		topics = append(topics, topic)
 	}
@@ -35,7 +35,7 @@ func GetOneTopics(id int) fd.Topic {
 	rows, err := db.Query(request_select)
 	CheckErr(err)
 	for rows.Next() {
-		err := rows.Scan(&topic.TopicID, &topic.TopicTitle, &topic.TopicMessage, &topic.TopicTime, &topic.TopicCategory, &topic.TopicAuthor)
+		err := rows.Scan(&topic.TopicID, &topic.TopicTitle, &topic.TopicMessage, &topic.TopicTime, &topic.TopicCategory, &topic.TopicAuthor, &topic.Likes, &topic.Dislikes)
 		CheckErr(err)
 	}
 	defer rows.Close()

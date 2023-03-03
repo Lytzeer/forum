@@ -13,10 +13,10 @@ func AddComment(phrase string, user string, commentid int) string {
 		db, err := sql.Open("sqlite3", filedb)
 		CheckErr(err)
 		defer db.Close()
-		stmt, err := db.Prepare("INSERT INTO Comments(title, like, dislike,topicid) VALUES (?,?,?,?)")
+		stmt, err := db.Prepare("INSERT INTO Comments(title, like, dislike,topicid, creatorname) VALUES (?,?,?,?,?)")
 		CheckErr(err)
 		defer stmt.Close()
-		_, err = stmt.Exec(phrase, 0, 0, commentid)
+		_, err = stmt.Exec(phrase, 0, 0, commentid, user)
 		CheckErr(err)
 
 		return "Comment added"
