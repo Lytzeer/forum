@@ -167,6 +167,7 @@ func HandleInfos(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleLogout(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("e")
 	if r.URL.Path != "/logout" {
 		ff.Error404(w, r)
 		return
