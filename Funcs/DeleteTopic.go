@@ -3,13 +3,15 @@ package forum
 import (
 	"database/sql"
 	"strconv"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func DeleteTopic(user string, topicID int) string {
 	if user == "" || topicID == 0 {
 		return "missing username"
 	} else {
-		db, err := sql.Open("mysql", filedb)
+		db, err := sql.Open("sqlite3", filedb)
 		CheckErr(err)
 		request_delete_topic := ("SELECT creatorname FROM Topics WHERE id='" + strconv.Itoa(topicID) + "'")
 		rows, err := db.Query(request_delete_topic)
@@ -23,6 +25,10 @@ func DeleteTopic(user string, topicID int) string {
 			return "je mange mon caca"
 		} else {
 			request_delete_comments, err := db.Prepare("DELETE FROM Topics WHERE id=?")
+			CheckErr(err)
+			request_delete_comments.Exec(topicID)
+			db.Close()
+			request_delete_comments, err = db.Prepare("DELETE FROM Comments WHERE topicid=?")
 			CheckErr(err)
 			request_delete_comments.Exec(topicID)
 			db.Close()

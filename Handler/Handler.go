@@ -19,7 +19,7 @@ var Topics []fd.Topic
 var Topic fd.Topic
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	if cucu.SignIn == false {
+	if cucu.SignIn == true {
 		token, err := r.Cookie("session")
 		ff.CheckErr(err)
 		fmt.Println(token.Value)
@@ -162,7 +162,9 @@ func HandleDeleteComment(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
-			ff.DeleteComment(cucu.User_name, Topic.TopicID)
+			id := r.FormValue("delete")
+			idstr, _ := strconv.Atoi(id)
+			ff.DeleteComment(cucu.User_name, idstr)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
@@ -194,7 +196,7 @@ func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/addcomment" {
+	if r.URL.Path != "/delete" {
 		ff.Error404(w, r)
 		return
 	} else {
@@ -205,7 +207,9 @@ func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
-			ff.DeleteTopic(cucu.User_name, Topic.TopicID)
+			id := r.FormValue("delete")
+			idstr, _ := strconv.Atoi(id)
+			ff.DeleteTopic(cucu.User_name, idstr)
 			tmpl = template.Must(template.ParseFiles("./static/index.html"))
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
@@ -215,7 +219,7 @@ func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleModifyTopic(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/addcomment" {
+	if r.URL.Path != "/modifyt" {
 		ff.Error404(w, r)
 		return
 	} else {

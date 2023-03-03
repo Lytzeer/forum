@@ -44,8 +44,14 @@
                     <span class="mb-4">{{ .TopicMessage }}</span>
                 </div>
             </form>
+            <form action="/delete" method="post">
+                <button class="" value="{{.TopicID}}" name="delete">
+                    <img src="/static/pics/delete.svg" alt="Delete Logo" class="my-1">
+                </button>
+            </form>    
             </button>
             {{end}}
+            
         </div>
     </div>
 </body>
