@@ -18,7 +18,6 @@
         <h1 class="nexa-heavy text-white text-8xl">Settings</h1>
         <div class="text-white nexa-heavy text-2xl mt-2">Change your <span class="text-purp">settings</span> !</div>
     </div>
-    <!-- <form action="/register" method="post"> -->
     <div class="content grid grid-cols-3 grid-rows-1 mt-10">
         <div class="text-white nexa-heavy text-base col-start-1 flex flex-col ml-5 mt-32">
             <span class="text-2xl mb-2">Personal Information :</span>
@@ -29,10 +28,10 @@
             <span class="text-purp">
                 E-mail <span class="text-white">:</span>
             </span>
-            <input type="email" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="mail" name="mail" disabled placeholder="{{.Email}}">
+            <input type="text" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="mail" name="mail" disabled placeholder="{{.Email}}">
         </div>
+        <form action="/editprofile" method="post">
         <div class="text-white nexa-heavy text-base col-start-2 flex flex-col ml-5 mt-32">
-        <!-- <form action="/editprofile" method="post"> -->
             <span class="text-2xl mb-2">Edit E-mail :</span>
             <span>
                 New <span class="text-purp">e-mail</span> :
@@ -45,9 +44,9 @@
             <div class="button mt-5 flex justify-around text-purp">
                 <button class="bg-bgray flex justify-center rounded-2xl w-24" type="submit" name="login">Apply</button>
             </div>
-         <!-- </form> -->
-        <!--<form action="/editprofile" method="post"> -->
-            <span class="text-2xl mb-2">Edit Username :</span>
+         </form>
+         <span class="text-2xl mb-2">Edit Username :</span>
+         <form action="/editprofile" method="post">
             <span>
                 New <span class="text-purp">Username</span> :
             </span>
@@ -55,7 +54,7 @@
             <div class="button mt-10 flex justify-around text-purp">
                 <button class="bg-bgray flex justify-center rounded-2xl w-24" type="submit" name="login">Apply</button>
             </div>
-            <!-- </form> -->
+        </form>
         </div>
         <form action="/editprofile" method="post">
         <div class="text-white nexa-heavy text-base col-start-3 flex flex-col ml-5 mt-32">
@@ -78,6 +77,5 @@
         </div>
     </form>
     </div>
-<!-- </form> -->
 </body>
 </html>
