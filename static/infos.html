@@ -1,33 +1,54 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../static/dist/style.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/static/pics/Forum Logo.svg">
-    <title>Main Page</title>
+    <title>Information</title>
 </head>
 <body>
-    <form action="/comment" method="get">
-        <div class="bg-white gap-1 text-black">
-            <div class="mx-4 flex justify-between">     
-                <!-- topcom            -->
-                
-                <span>comment<span>
-                <input type="text" name="comment" id="comment">
-                <button name="submitlogin" type="submit" class="bg-gray-400 border-2 border-red-600">Submit</button>
-                <!-- allcoms -->
-                {{ range . }}
-                    <p>{{ .Id }}</span>p>
-                    <p>{{ .Title }}</span>p>
-                    <p>{{ .Like }}</div>p>
-                    <p>{{ .Dislike }}</div>p>
-                {{ end }}
-                
+    <div class="top-logo flex justify-between mx-1">
+        <a href="/">
+            <img src="/static/pics/Forum Logo.svg" alt="Forum Logo" class="mt-1">
+        </a>
+    </div>
+    <div class="title flex items-center flex-col mt-8">
+        <h1 class="nexa-heavy text-white text-8xl">{{.TopicTitle}}</h1>
+    </div>
+    <div class="mx-72 border-2 border-purp rounded-xl mt-4">
+        <div class="flex justify-between">
+            <div class="flex items-center px-2">
+                <button class="">
+                    <img src="/static/pics/like.svg" alt="Like Logo" class="mt-1 w-6 h-6">
+                </button>
+                <span class="text-white nexa-light pl-2">1543</span>
+            </div>
+            <div class="flex items-center px-2">
+                <button class="">
+                    <img src="/static/pics/dislike.svg" alt="Dislike Logo" class="mt-1 w-6 h-6">
+                </button>
+                <span class="text-white nexa-light pl-2">10</span>
             </div>
         </div>
-    </form>
-    <footer class="text-purp flex justify-center static">UwU</footer>
+        <div class="px-2 mt-7">
+            <span class="text-white nexa-heavy  mt-7 text-sm">{{ .TopicMessage }}</span>
+        </div>
+        <div class="px-2 mt-7 mb-2">
+            <span class="text-white nexa-heavy mt-7 text-base border-b-2">Comments :</span>
+        </div>
+        <div class="flex flex-row text-white ml-2">
+            <span class="nexa-light">Lewis Hamilton 03/03/2023 10:26</span>
+            <span class="nexa-heavy ml-2">I gonna win my 8th world championship</span>
+        </div>
+    </div>
+    <div class="flex flex-col mx-72 mt-4">
+        <span class="text-white nexa-heavy mb-2">Add Comment :</span>
+        <textarea class="h-96 rounded-2xl bg-bgray pl-2 nexa-heavy" id="message" name="message" placeholder="Enter your comment here ..."></textarea>
+    </div>
+    <div class="flex justify-center">
+        <button class="nexa-heavy text-purp bg-bgray rounded-2xl w-24 mt-8" type="submit" name="Add Coment">Add</button>
+    </div>
 </body>
 </html>

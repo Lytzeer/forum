@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func CheckToken(token string) (int, string, string) {
+func CheckToken(token string) (int, string, string, string) {
 	db, err := sql.Open("sqlite3", filedb)
 	CheckErr(err)
 	request_count := "SELECT COUNT(*) FROM User WHERE token = ?"
@@ -29,7 +29,7 @@ func CheckToken(token string) (int, string, string) {
 			CheckErr(err)
 		}
 		fmt.Println(id, username, email)
-		return id, username, email
+		return id, username, email, token
 	}
-	return 0, "", ""
+	return 0, "", "", ""
 }

@@ -15,7 +15,7 @@ func main() {
 	http.HandleFunc("/profile", fh.HandleProfile)
 	http.HandleFunc("/logout", fh.HandleLogout)
 	http.HandleFunc("/comment", fh.HandleComment)
-	http.HandleFunc("/info", fh.HandleInfos)
+	http.HandleFunc("/infos", fh.HandleInfos)
 	http.HandleFunc("/test", fh.HandleTest)
 	http.HandleFunc("/editprofile", fh.HandleEditProfile)
 	http.HandleFunc("/notif", fh.HandleNotif)

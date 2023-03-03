@@ -3,6 +3,7 @@ package forum
 import (
 	"database/sql"
 	"net/http"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -31,9 +32,10 @@ func SetCookie(w http.ResponseWriter, r *http.Request, username string) string {
 
 func DeleteCookie(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
-		Name:   "session",
-		Value:  "",
-		MaxAge: -1,
+		Name:    "session",
+		Value:   "",
+		MaxAge:  -1,
+		Expires: time.Now().Add(-1 * time.Hour),
 	}
 	http.SetCookie(w, cookie)
 }
