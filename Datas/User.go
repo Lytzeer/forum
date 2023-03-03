@@ -5,5 +5,5 @@ type User struct {
 	User_name string
 	Email     string
 	Token     string
-	SignOut   bool
+	SignIn    bool
 }

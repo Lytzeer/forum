@@ -19,7 +19,7 @@ var Topics []fd.Topic
 var Topic fd.Topic
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	if cucu.SignOut == false {
+	if cucu.SignIn == false {
 		token, err := r.Cookie("session")
 		ff.CheckErr(err)
 		fmt.Println(token.Value)
@@ -128,7 +128,7 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func HandleComment(w http.ResponseWriter, r *http.Request) {
+func HandleAddComment(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/addcomment" {
 		ff.Error404(w, r)
 		return
@@ -143,6 +143,92 @@ func HandleComment(w http.ResponseWriter, r *http.Request) {
 			comment := r.FormValue("message")
 			ff.AddComment(comment, cucu.User_name, Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			err := tmpl.Execute(w, Topic)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleDeleteComment(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/delcomment" {
+		ff.Error404(w, r)
+		return
+	} else {
+		var tmpl *template.Template
+		if cucu.Token == "" {
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			ff.DeleteComment(cucu.User_name, Topic.TopicID)
+			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			err := tmpl.Execute(w, Topic)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/addcomment" {
+		ff.Error404(w, r)
+		return
+	} else {
+		var tmpl *template.Template
+		if cucu.Token == "" {
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			comment := r.FormValue("message")
+			ff.ModifyComment(comment, cucu.User_name, Topic.TopicID)
+			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			err := tmpl.Execute(w, Topic)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/addcomment" {
+		ff.Error404(w, r)
+		return
+	} else {
+		var tmpl *template.Template
+		if cucu.Token == "" {
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			ff.DeleteTopic(cucu.User_name, Topic.TopicID)
+			tmpl = template.Must(template.ParseFiles("./static/index.html"))
+			err := tmpl.Execute(w, Topic)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleModifyTopic(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/addcomment" {
+		ff.Error404(w, r)
+		return
+	} else {
+		var tmpl *template.Template
+		if cucu.Token == "" {
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			comment := r.FormValue("message")
+			ff.ModifyComment(comment, cucu.User_name, Topic.TopicID)
+			tmpl = template.Must(template.ParseFiles("./static/index.html"))
 			err := tmpl.Execute(w, Topic)
 			ff.CheckErr(err)
 			return
@@ -175,12 +261,12 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cucu.User_name = ""
 		cucu.Token = ""
-		cucu.SignOut = true
+		cucu.SignIn = true
 		cucu.Id = 0
 		ff.DeleteCookie(w, r)
 		var tmpl *template.Template
 		tmpl = template.Must(template.ParseFiles("./static/index.html"))
-		err := tmpl.Execute(w, nil)
+		err := tmpl.Execute(w, Topics)
 		ff.CheckErr(err)
 		http.Redirect(w, r, "/", 302)
 		return
@@ -267,6 +353,7 @@ func HandleLike(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("like")
 			idint, _ := strconv.Atoi(id)
+			fmt.Println(idint)
 			ff.Like(idint)
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
@@ -291,6 +378,7 @@ func HandleDislike(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("dislike")
 			idint, _ := strconv.Atoi(id)
+			fmt.Println(idint)
 			ff.Dislike(idint)
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
