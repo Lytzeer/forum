@@ -141,7 +141,7 @@ func HandleAddComment(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			comment := r.FormValue("message")
-			ff.AddComment(comment, User.User_name, Topic.TopicID)
+			ff.AddComment(comment, User.User_name, Topic.TopicID, Topic.TopicAuthor)
 			Topic = ff.GetOneTopics(Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)

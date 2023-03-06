@@ -19,15 +19,21 @@
         <div class="text-white nexa-heavy text-2xl mt-2">You can create you <span class="text-purp">own topic</span> !</div>
     </div>
     <form action="/create" method="post">
-    <div class="content mt-20 text-white nexa-heavy grid grid-cols-2 grid-rows-1 gap-8">
-        <div class="topic-title flex flex-col col-start-1 ml-16">
-            <span class="col-start-1">Title :</span>
-            <input type="text" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="title" name="title" required placeholder="Enter title here ...">
+        <div class="content mt-20 text-white nexa-heavy grid grid-cols-2 grid-rows-1 gap-8">
+            <div class="topic-title flex flex-col col-start-1 ml-16">
+                <span class="col-start-1">Title :</span>
+                <input type="text" class="rounded-2xl bg-bgray mb-6 text-black pl-2" id="title" name="title" required placeholder="Enter title here ...">
+            </div>
+            <div class="topic-categories flex flex-col col-start-2 mr-16">
+            <span class="col-start-2">Categories :</span>
+            <input type="radio" name="categories" value="sport" >
+            <label for="huey">Sport</label>
+            <input type="radio" name="categories" value="gaming" >
+            <label for="huey">Gaming</label>
+            <input type="radio" name="categories" value="other" checked>
+            <label for="huey">Other</label>
+            </div> 
         </div>
-        <div class="topic-categories flex flex-col col-start-2 mr-16">
-        <span class="col-start-2">Categories :</span>
-        </div> 
-    </div>
     <div class="text-black nexa-heavy flex flex-col mx-16 mt-10">
         <span class="text-white">Message :</span>
         <textarea class="rounded-2xl bg-bgray h-96 pl-2" id="message" name="message" required></textarea>
