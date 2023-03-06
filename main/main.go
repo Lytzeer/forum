@@ -23,6 +23,8 @@ func main() {
 	http.HandleFunc("/delcomment", fh.HandleDeleteComment)
 	http.HandleFunc("/modifc", fh.HandleModifyComment)
 	http.HandleFunc("/like", fh.HandleLike)
+	http.HandleFunc("/liketopic", fh.HandleLikeTopic)
+	http.HandleFunc("/disliketopic", fh.HandleDislikeTopic)
 	http.HandleFunc("/dislike", fh.HandleDislike)
 	http.HandleFunc("/notif", fh.HandleNotif)
 	fs := http.FileServer(http.Dir("./static"))

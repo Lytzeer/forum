@@ -20,6 +20,7 @@ var Topic fd.Topic
 var leboule bool
 
 var T fd.Topics
+var T2 fd.TopicInfos
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
 	if User.SignIn == true {
@@ -153,9 +154,11 @@ func HandleAddComment(w http.ResponseWriter, r *http.Request) {
 			comment := r.FormValue("message")
 			ff.AddComment(comment, User.User_name, Topic.TopicID, Topic.TopicAuthor)
 			Topic = ff.GetOneTopics(Topic.TopicID)
+			T2.Topic = Topic
+			T2.User = User
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
-			err := tmpl.Execute(w, Topic)
+			err := tmpl.Execute(w, T2)
 			ff.CheckErr(err)
 			return
 		}
@@ -178,9 +181,11 @@ func HandleDeleteComment(w http.ResponseWriter, r *http.Request) {
 			idstr, _ := strconv.Atoi(id)
 			ff.DeleteComment(User.User_name, idstr)
 			Topic = ff.GetOneTopics(Topic.TopicID)
+			T2.Topic = Topic
+			T2.User = User
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
-			err := tmpl.Execute(w, Topic)
+			err := tmpl.Execute(w, T2)
 			ff.CheckErr(err)
 			return
 		}
@@ -201,8 +206,11 @@ func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
 		} else {
 			comment := r.FormValue("message")
 			ff.ModifyComment(comment, User.User_name, Topic.TopicID)
+			Topic = ff.GetOneTopics(Topic.TopicID)
+			T2.Topic = Topic
+			T2.User = User
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
-			err := tmpl.Execute(w, Topic)
+			err := tmpl.Execute(w, T2)
 			ff.CheckErr(err)
 			return
 		}
@@ -248,8 +256,11 @@ func HandleModifyTopic(w http.ResponseWriter, r *http.Request) {
 		} else {
 			comment := r.FormValue("message")
 			ff.ModifyComment(comment, User.User_name, Topic.TopicID)
+			Topic = ff.GetOneTopics(Topic.TopicID)
+			T2.Topic = Topic
+			T2.User = User
 			tmpl = template.Must(template.ParseFiles("./static/index.html"))
-			err := tmpl.Execute(w, Topic)
+			err := tmpl.Execute(w, T2)
 			ff.CheckErr(err)
 			return
 		}
@@ -265,9 +276,11 @@ func HandleInfos(w http.ResponseWriter, r *http.Request) {
 		Topic.TopicID, _ = strconv.Atoi(id)
 		Topic = ff.GetOneTopics(Topic.TopicID)
 		Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
+		T2.Topic = Topic
+		T2.User = User
 		var tmpl *template.Template
 		tmpl = template.Must(template.ParseFiles("./static/infos.html"))
-		err := tmpl.Execute(w, Topic)
+		err := tmpl.Execute(w, T2)
 		ff.CheckErr(err)
 		return
 	}
@@ -383,9 +396,12 @@ func HandleLike(w http.ResponseWriter, r *http.Request) {
 			}
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)
+			Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
+			T2.Topic = Topic
+			T2.User = User
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
-			err := tmpl.Execute(w, Topic)
+			err := tmpl.Execute(w, T2)
 			ff.CheckErr(err)
 			return
 		}
@@ -410,9 +426,64 @@ func HandleDislike(w http.ResponseWriter, r *http.Request) {
 			ff.Dislike(idint)
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)
+			Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
+			T2.Topic = Topic
+			T2.User = User
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 			http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
-			err := tmpl.Execute(w, Topic)
+			err := tmpl.Execute(w, T2)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleLikeTopic(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/liketopic" {
+		ff.Error404(w, r)
+		return
+	} else {
+		if User.Token == "" {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			ff.LikeTopic(T2.Topic.TopicID)
+			T2.Topic = ff.GetOneTopics(T2.Topic.TopicID)
+			T2.Topic.Comments = ff.GetCommmentsOfTopic(T2.Topic.TopicID)
+			T2.User = User
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			http.Redirect(w, r, "/infos?id="+strconv.Itoa(T2.Topic.TopicID), 302)
+			err := tmpl.Execute(w, T2)
+			ff.CheckErr(err)
+			return
+		}
+	}
+}
+
+func HandleDislikeTopic(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/disliketopic" {
+		ff.Error404(w, r)
+		return
+	} else {
+		if User.Token == "" {
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/login.html"))
+			err := tmpl.Execute(w, nil)
+			ff.CheckErr(err)
+			return
+		} else {
+			ff.DislikeTopic(T2.Topic.TopicID)
+			T2.Topic = ff.GetOneTopics(T2.Topic.TopicID)
+			T2.Topic.Comments = ff.GetCommmentsOfTopic(T2.Topic.TopicID)
+			T2.User = User
+			var tmpl *template.Template
+			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+			http.Redirect(w, r, "/infos?id="+strconv.Itoa(T2.Topic.TopicID), 302)
+			err := tmpl.Execute(w, T2)
 			ff.CheckErr(err)
 			return
 		}
