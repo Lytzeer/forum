@@ -21,7 +21,7 @@ func main() {
 	http.HandleFunc("/editprofile", fh.HandleEditProfile)
 	http.HandleFunc("/addcomment", fh.HandleAddComment)
 	http.HandleFunc("/delcomment", fh.HandleDeleteComment)
-	http.HandleFunc("/modifc", fh.HandleModifyComment)
+	http.HandleFunc("/modifycomment", fh.HandleModifyComment)
 	http.HandleFunc("/like", fh.HandleLike)
 	http.HandleFunc("/liketopic", fh.HandleLikeTopic)
 	http.HandleFunc("/disliketopic", fh.HandleDislikeTopic)

@@ -18,12 +18,13 @@
         <h1 class="nexa-heavy text-white text-8xl">Modify</h1>
         <div class="text-white nexa-heavy text-2xl mt-2">You can modify your <span class="text-purp">comment</span> !</div>
     </div>
+    <form action="/modifycomment" method="get">
     <div class="text-black nexa-heavy flex flex-col mx-16 mt-10">
         <span class="text-white">New <span class="text-purp">message</span> :</span>
-        <textarea class="rounded-2xl bg-bgray h-96 pl-2" id="message" name="message" required></textarea>
+        <textarea class="rounded-2xl bg-bgray h-96 pl-2" id="message" name="message" required>{{.Title}}</textarea>
     </div>
     <div class="flex justify-center mt-10">
-        <button class="bg-bgray flex justify-center rounded-2xl w-24 text-purp nexa-heavy" type="submit" name="create-topic">Modify</button>
+        <button class="bg-bgray flex justify-center rounded-2xl w-24 text-purp nexa-heavy" type="submit">Modify</button>
     </div>
     </form>
 </body>

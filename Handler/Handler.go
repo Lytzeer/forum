@@ -193,7 +193,7 @@ func HandleDeleteComment(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/addcomment" {
+	if r.URL.Path != "/modifycomment" {
 		ff.Error404(w, r)
 		return
 	} else {
@@ -204,15 +204,29 @@ func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
-			comment := r.FormValue("message")
-			ff.ModifyComment(comment, User.User_name, Topic.TopicID)
-			Topic = ff.GetOneTopics(Topic.TopicID)
-			T2.Topic = Topic
-			T2.User = User
-			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
-			err := tmpl.Execute(w, T2)
-			ff.CheckErr(err)
-			return
+			commentId := r.FormValue("modify")
+			commentIdstr, _ := strconv.Atoi(commentId)
+			message := r.FormValue("message")
+			fmt.Println(message)
+			if commentIdstr == 0 {
+				T2.Topic = ff.GetOneTopics(commentIdstr)
+				tmpl = template.Must(template.ParseFiles("./static/infos.html"))
+				http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
+				err := tmpl.Execute(w, T2)
+				ff.CheckErr(err)
+				return
+			} else {
+				fmt.Println(message)
+				fmt.Println("feds")
+				Comment := ff.GetOneComment(commentIdstr)
+				a := ff.ModifyComment(message, User.User_name, commentIdstr)
+				fmt.Println(a)
+				fmt.Println(Comment.Title)
+				tmpl = template.Must(template.ParseFiles("./static/editcomment.html"))
+				err := tmpl.Execute(w, Comment)
+				ff.CheckErr(err)
+				return
+			}
 		}
 	}
 }
@@ -259,7 +273,7 @@ func HandleModifyTopic(w http.ResponseWriter, r *http.Request) {
 			Topic = ff.GetOneTopics(Topic.TopicID)
 			T2.Topic = Topic
 			T2.User = User
-			tmpl = template.Must(template.ParseFiles("./static/index.html"))
+			tmpl = template.Must(template.ParseFiles("./static/edittopic.html"))
 			err := tmpl.Execute(w, T2)
 			ff.CheckErr(err)
 			return
