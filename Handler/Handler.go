@@ -339,9 +339,11 @@ func HandleNotif(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
+			var Notifications []fd.Notif
+			Notifications = ff.GetNotifs(User.User_name)
 			var tmpl *template.Template
 			tmpl = template.Must(template.ParseFiles("./static/notif.html"))
-			err := tmpl.Execute(w, nil)
+			err := tmpl.Execute(w, Notifications)
 			ff.CheckErr(err)
 			return
 		}
