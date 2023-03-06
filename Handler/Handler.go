@@ -19,6 +19,8 @@ var Topics []fd.Topic
 var Topic fd.Topic
 var leboule bool
 
+var T fd.Topics
+
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
 	if User.SignIn == true {
 		token, err := r.Cookie("session")
@@ -32,9 +34,11 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		Topics = ff.GetTopics()
+		T.Topics = Topics
+		T.User = User
 		var tmpl *template.Template
 		tmpl = template.Must(template.ParseFiles("./static/index.html"))
-		err := tmpl.Execute(w, Topics)
+		err := tmpl.Execute(w, T)
 		ff.CheckErr(err)
 		return
 	}
@@ -216,8 +220,9 @@ func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
 			idstr, _ := strconv.Atoi(id)
 			ff.DeleteTopic(User.User_name, idstr)
 			Topics = ff.GetTopics()
+			T.Topics = Topics
 			tmpl = template.Must(template.ParseFiles("./static/index.html"))
-			err := tmpl.Execute(w, Topics)
+			err := tmpl.Execute(w, T)
 			ff.CheckErr(err)
 			return
 		}
@@ -273,10 +278,11 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 		User.Token = ""
 		User.SignIn = true
 		User.Id = 0
+		T.User = User
 		ff.DeleteCookie(w, r)
 		var tmpl *template.Template
 		tmpl = template.Must(template.ParseFiles("./static/index.html"))
-		err := tmpl.Execute(w, Topics)
+		err := tmpl.Execute(w, T)
 		ff.CheckErr(err)
 		http.Redirect(w, r, "/", 302)
 		return
