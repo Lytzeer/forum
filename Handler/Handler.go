@@ -489,3 +489,18 @@ func HandleDislikeTopic(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func HandleFilters(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/filters" {
+		ff.Error404(w, r)
+		return
+	} else {
+		filter := r.FormValue("filter")
+		T.Topics = ff.GetFiltred(filter)
+		var tmpl *template.Template
+		tmpl = template.Must(template.ParseFiles("./static/index.html"))
+		err := tmpl.Execute(w, T)
+		ff.CheckErr(err)
+		return
+	}
+}

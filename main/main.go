@@ -27,6 +27,7 @@ func main() {
 	http.HandleFunc("/disliketopic", fh.HandleDislikeTopic)
 	http.HandleFunc("/dislike", fh.HandleDislike)
 	http.HandleFunc("/notif", fh.HandleNotif)
+	http.HandleFunc("/filters", fh.HandleFilters)
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	http.ListenAndServe(":8080", nil)

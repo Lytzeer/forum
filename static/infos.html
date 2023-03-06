@@ -69,6 +69,11 @@
                     <button class="" value="{{.Id}}" name="delete">
                         <img src="/static/pics/delete.svg" alt="Delete Logo" class="my-1">
                     </button>
+            </form>
+                <form action="/modifycomment" method="get">
+                    <button class="px-4" value="{{.Id}}" name="modify">
+                        <img src="/static/pics/modify.svg" alt="Delete Logo" class="my-1">
+                    </button>
                 </div>
             </form>
             {{end}}

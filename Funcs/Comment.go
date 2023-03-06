@@ -13,7 +13,6 @@ func AddComment(phrase string, user string, commentid int, topicauthor string) s
 	} else {
 		db, err := sql.Open("sqlite3", filedb)
 		CheckErr(err)
-		defer db.Close()
 		stmt, err := db.Prepare("INSERT INTO Comments(title, like, dislike,topicid, creatorname) VALUES (?,?,?,?,?)")
 		CheckErr(err)
 		defer stmt.Close()
@@ -24,6 +23,7 @@ func AddComment(phrase string, user string, commentid int, topicauthor string) s
 		defer notif.Close()
 		_, err = notif.Exec(time.Now().String(), topicauthor, user+" à commenté votre post")
 		CheckErr(err)
+		defer db.Close()
 
 		return "Comment added"
 	}
