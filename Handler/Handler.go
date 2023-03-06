@@ -17,6 +17,7 @@ var t displayerror
 var User fd.User
 var Topics []fd.Topic
 var Topic fd.Topic
+var leboule bool
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
 	if User.SignIn == true {
@@ -365,7 +366,10 @@ func HandleLike(w http.ResponseWriter, r *http.Request) {
 			id := r.FormValue("like")
 			idint, _ := strconv.Atoi(id)
 			fmt.Println(idint)
-			ff.Like(idint)
+			if leboule == false {
+				ff.Like(idint)
+				leboule = true
+			}
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)
 			tmpl = template.Must(template.ParseFiles("./static/infos.html"))
