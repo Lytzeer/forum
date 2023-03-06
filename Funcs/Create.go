@@ -17,7 +17,8 @@ func Create(phrase string, user string, title string, categorie string) string {
 		stmt, err := db.Prepare("INSERT INTO Topics (title, message, date, categorie, creatorname,like, dislike) VALUES (?, ?, ?, ?, ?, ?, ?)")
 		CheckErr(err)
 		defer stmt.Close()
-		_, err = stmt.Exec(title, phrase, time.Now().String(), categorie, user, 0, 0)
+		time := time.Now().Format("2 Jan 2006 15:04")
+		_, err = stmt.Exec(title, phrase, time, categorie, user, 0, 0)
 		CheckErr(err)
 		return "Topic created"
 	}

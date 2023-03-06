@@ -59,13 +59,18 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 			t.Leprobleme = ff.Create(message, User.User_name, title, "sport")
 			if t.Leprobleme == "Topic created" {
 				tmpl = template.Must(template.ParseFiles("./static/index.html"))
+				T.Topics = ff.GetTopics()
+				T.User = User
+				err := tmpl.Execute(w, T)
+				ff.CheckErr(err)
+				return
 			} else {
 				tmpl = template.Must(template.ParseFiles("./static/create.html"))
+				err := tmpl.Execute(w, nil)
+				ff.CheckErr(err)
+				return
 			}
 		}
-		err := tmpl.Execute(w, nil)
-		ff.CheckErr(err)
-		return
 	}
 }
 

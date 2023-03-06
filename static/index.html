@@ -16,9 +16,15 @@
             </a>
         </div>
         <div class="flex">
+            {{ if eq .User.User_name ""}}
             <a href="/notif">
                 <img src="/static/pics/notif-off.svg" alt="Notif Logo" class="mt-1 mx-3">
             </a>
+            {{ else }}
+            <a href="/notif">
+                <img src="/static/pics/notif-on.svg" alt="Notif Logo" class="mt-1 mx-3">
+            </a>
+            {{ end }}
             <a href="/profile">
                 <img src="/static/pics/account.svg" alt="Account Logo" class="mt-1 mx-3">
             </a>
@@ -29,7 +35,23 @@
         <div class="text-purp nexa-heavy text-2xl">Welcome</div>
     </div>
     <div class="content grid grid-cols-3 grid-rows-1 mt-10">
-        <div class="text-white nexa-heavy text-base col-start-1 ml-5">Filter :</div>
+        <div class="flex flex-col">
+            <div class="text-white nexa-heavy text-base col-start-1 ml-5">Filter :</div>
+            <div class="p-10">
+                <div class="dropdown inline-block relative">
+                  <button class="bg-gray-300 nexa-heavy text-purp py-2 px-4 rounded inline-flex items-center w-80 justify-between">
+                        <span class="mr-1">Filter</span>
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                  </button>
+                  <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+                    <li class=""><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">One</a></li>
+                    <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">Two</a></li>
+                    <li class=""><a class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">Three is the magic number</a></li>
+                  </ul>
+                </div>
+              
+              </div>
+        </div>
         <div class="text-white nexa-heavy text-base col-start-2 col-end-3 ml-5 flex flex-col">
             <span>Topics :</span>
             {{ $Username := .User.User_name}}
