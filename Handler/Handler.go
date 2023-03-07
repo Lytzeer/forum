@@ -19,6 +19,9 @@ var Topics []fd.Topic
 var Topic fd.Topic
 var leboule bool
 
+var modifycommentid int
+var modifytopicid int
+
 var T fd.Topics
 var T2 fd.TopicInfos
 
@@ -205,23 +208,21 @@ func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			commentId := r.FormValue("modify")
+			if modifycommentid == 0 {
+				modifycommentid, _ = strconv.Atoi(commentId)
+			}
 			commentIdstr, _ := strconv.Atoi(commentId)
 			message := r.FormValue("message")
-			fmt.Println(message)
 			if commentIdstr == 0 {
-				T2.Topic = ff.GetOneTopics(commentIdstr)
+				ff.ModifyComment(message, User.User_name, modifycommentid)
+				T2.Topic = ff.GetOneTopics(modifycommentid)
 				tmpl = template.Must(template.ParseFiles("./static/infos.html"))
 				http.Redirect(w, r, "/infos?id="+strconv.Itoa(Topic.TopicID), 302)
 				err := tmpl.Execute(w, T2)
 				ff.CheckErr(err)
 				return
 			} else {
-				fmt.Println(message)
-				fmt.Println("feds")
-				Comment := ff.GetOneComment(commentIdstr)
-				a := ff.ModifyComment(message, User.User_name, commentIdstr)
-				fmt.Println(a)
-				fmt.Println(Comment.Title)
+				Comment := ff.GetOneComment(modifycommentid)
 				tmpl = template.Must(template.ParseFiles("./static/editcomment.html"))
 				err := tmpl.Execute(w, Comment)
 				ff.CheckErr(err)
@@ -231,6 +232,7 @@ func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// pute
 func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/delete" {
 		ff.Error404(w, r)
@@ -243,8 +245,11 @@ func HandleDeleteTopic(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
-			id := r.FormValue("delete")
-			idstr, _ := strconv.Atoi(id)
+			topicid := r.FormValue("delete")
+			if modifytopicid == 0 {
+				modifytopicid, _ = strconv.Atoi(topicid)
+			}
+			idstr, _ := strconv.Atoi(topicid)
 			ff.DeleteTopic(User.User_name, idstr)
 			Topics = ff.GetTopics()
 			T.Topics = Topics
@@ -269,14 +274,30 @@ func HandleModifyTopic(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			comment := r.FormValue("message")
-			ff.ModifyComment(comment, User.User_name, Topic.TopicID)
-			Topic = ff.GetOneTopics(Topic.TopicID)
-			T2.Topic = Topic
-			T2.User = User
-			tmpl = template.Must(template.ParseFiles("./static/edittopic.html"))
-			err := tmpl.Execute(w, T2)
-			ff.CheckErr(err)
-			return
+			title := r.FormValue("title")
+			fmt.Println("comment", comment, "title", title)
+			topicid := r.FormValue("modify")
+			if modifytopicid == 0 {
+				modifytopicid, _ = strconv.Atoi(topicid)
+			}
+			topicidstr, _ := strconv.Atoi(topicid)
+			if topicidstr == 0 {
+				ff.ModifyTopic(title, comment, User.User_name, modifytopicid)
+				T.Topics = ff.GetTopics()
+				tmpl = template.Must(template.ParseFiles("./static/index.html"))
+				http.Redirect(w, r, "/", 302)
+				err := tmpl.Execute(w, T)
+				ff.CheckErr(err)
+				return
+			} else {
+				Topic = ff.GetOneTopics(modifytopicid)
+				T2.Topic = Topic
+				tmpl = template.Must(template.ParseFiles("./static/edittopic.html"))
+				err := tmpl.Execute(w, T2)
+				ff.CheckErr(err)
+				return
+			}
+
 		}
 	}
 }

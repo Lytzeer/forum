@@ -8,7 +8,13 @@ import (
 )
 
 func ModifyComment(phrase string, user string, commentID int) string {
-	if user == "" || commentID == 0 || phrase == "" {
+	if user == "" {
+		return "missing u"
+	} else if phrase == "" {
+		return "missing p"
+	} else if commentID == 0 {
+		return "missing c"
+	} else if user == "" || commentID == 0 || phrase == "" {
 		return "missing field"
 	} else {
 		db, err := sql.Open("sqlite3", filedb)
