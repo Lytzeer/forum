@@ -1,7 +1,6 @@
 package forum
 
 import (
-	"fmt"
 	fd "forum/Datas"
 	ff "forum/Funcs"
 	"html/template"
@@ -17,7 +16,6 @@ var t displayerror
 var User fd.User
 var Topics []fd.Topic
 var Topic fd.Topic
-var leboule bool
 
 var modifycommentid int
 var modifytopicid int
@@ -29,9 +27,7 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 	if User.SignIn == true {
 		token, err := r.Cookie("session")
 		ff.CheckErr(err)
-		fmt.Println(token.Value)
 		User.Id, User.User_name, User.Email, User.Token = ff.CheckToken(token.Value)
-		fmt.Println(User.Id, User.User_name, User.Email, User.Token, token.Value)
 	}
 	if r.URL.Path != "/" {
 		ff.Error404(w, r)
@@ -59,8 +55,7 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 		} else {
 			tmpl = template.Must(template.ParseFiles("./static/create.html"))
 			title, message, categorie := r.FormValue("title"), r.FormValue("message"), r.FormValue("checkbox")
-			fmt.Println(title, message, categorie)
-			t.Leprobleme = ff.Create(message, User.User_name, title, "sport")
+			t.Leprobleme = ff.Create(message, User.User_name, title, categorie)
 			if t.Leprobleme == "Topic created" {
 				tmpl = template.Must(template.ParseFiles("./static/index.html"))
 				T.Topics = ff.GetTopics()
@@ -207,12 +202,11 @@ func HandleModifyComment(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
-			commentId := r.FormValue("modify")
+			commentId, message := r.FormValue("modify"), r.FormValue("message")
 			if modifycommentid == 0 {
 				modifycommentid, _ = strconv.Atoi(commentId)
 			}
 			commentIdstr, _ := strconv.Atoi(commentId)
-			message := r.FormValue("message")
 			if commentIdstr == 0 {
 				ff.ModifyComment(message, User.User_name, modifycommentid)
 				T2.Topic = ff.GetOneTopics(modifycommentid)
@@ -273,10 +267,7 @@ func HandleModifyTopic(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
-			comment := r.FormValue("message")
-			title := r.FormValue("title")
-			fmt.Println("comment", comment, "title", title)
-			topicid := r.FormValue("modify")
+			comment, title, topicid := r.FormValue("message"), r.FormValue("title"), r.FormValue("modify")
 			if modifytopicid == 0 {
 				modifytopicid, _ = strconv.Atoi(topicid)
 			}
@@ -322,7 +313,6 @@ func HandleInfos(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleLogout(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("e")
 	if r.URL.Path != "/logout" {
 		ff.Error404(w, r)
 		return
@@ -368,7 +358,6 @@ func HandleEditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			newemail, confemail, currentpassword, newpassword, confnewpassword, newusername := r.FormValue("newemail"), r.FormValue("confemail"), r.FormValue("currentpassword"), r.FormValue("newpassword"), r.FormValue("confnewpassword"), r.FormValue("newusername")
-			fmt.Println(newemail, confemail, currentpassword, newpassword, confnewpassword, newusername)
 			if newemail != "" && confemail != "" {
 				ff.EditMail(User.Id, newemail, confemail)
 			}
@@ -424,11 +413,7 @@ func HandleLike(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("like")
 			idint, _ := strconv.Atoi(id)
-			fmt.Println(idint)
-			if leboule == false {
-				ff.Like(idint)
-				leboule = true
-			}
+			ff.Like(idint)
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)
 			Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
@@ -457,7 +442,6 @@ func HandleDislike(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("dislike")
 			idint, _ := strconv.Atoi(id)
-			fmt.Println(idint)
 			ff.Dislike(idint)
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)

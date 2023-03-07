@@ -2,7 +2,6 @@ package forum
 
 import (
 	"database/sql"
-	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
@@ -24,7 +23,6 @@ func Login(username string, password string) string {
 		for rows.Next() {
 			err = rows.Scan(&username_db, &email_db, &password_db, &token_db)
 			CheckErr(err)
-			fmt.Println(username_db, email_db, password_db)
 		}
 		if bcrypt.CompareHashAndPassword([]byte(password_db), []byte(password)) != nil {
 			return "Wrong username or password"
