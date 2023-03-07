@@ -24,7 +24,7 @@ var T fd.Topics
 var T2 fd.TopicInfos
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	if User.SignIn == true {
+	if User.SignIn == false {
 		token, err := r.Cookie("session")
 		ff.CheckErr(err)
 		User.Id, User.User_name, User.Email, User.Token = ff.CheckToken(token.Value)
