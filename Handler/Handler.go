@@ -33,11 +33,11 @@ var T fd.Topics
 var T2 fd.TopicInfos
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	if User.SignIn == true {
-		token, err := r.Cookie("session")
-		ff.CheckErr(err)
-		User.Id, User.User_name, User.Email, User.Token = ff.CheckToken(token.Value)
-	}
+	// if User.SignIn == true {
+	// 	token, err := r.Cookie("session")
+	// 	ff.CheckErr(err)
+	// 	User.Id, User.User_name, User.Email, User.Token = ff.CheckToken(token.Value)
+	// }
 	if r.URL.Path != "/" {
 		ff.Error404(w, r)
 		return
@@ -63,7 +63,8 @@ func HandleCreate(w http.ResponseWriter, r *http.Request) {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
 		} else {
 			tmpl = template.Must(template.ParseFiles("./static/create.html"))
-			title, message, categorie := r.FormValue("title"), r.FormValue("message"), r.FormValue("checkbox")
+			title, message, categorie := r.FormValue("title"), r.FormValue("message"), r.FormValue("categories")
+			fmt.Println(title, message, categorie, User.User_name)
 			t.Leprobleme = ff.Create(message, User.User_name, title, categorie)
 			if t.Leprobleme == "Topic created" {
 				tmpl = template.Must(template.ParseFiles("./static/index.html"))
