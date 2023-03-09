@@ -2,7 +2,8 @@ package forum
 
 import (
 	"database/sql"
-	"fmt"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func CheckToken(token string) (int, string, string, string) {
@@ -28,7 +29,6 @@ func CheckToken(token string) (int, string, string, string) {
 			err = rows.Scan(&id, &username, &email)
 			CheckErr(err)
 		}
-		fmt.Println(id, username, email)
 		return id, username, email, token
 	}
 	return 0, "", "", ""

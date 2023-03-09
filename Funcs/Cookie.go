@@ -2,7 +2,6 @@ package forum
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -32,7 +31,6 @@ func SetCookie(w http.ResponseWriter, r *http.Request, username string) string {
 }
 
 func DeleteCookie(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("yo")
 	cookie := &http.Cookie{
 		Name:    "session",
 		Value:   "",

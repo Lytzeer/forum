@@ -3,15 +3,23 @@ package forum
 import (
 	"database/sql"
 	"strconv"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func ModifyComment(phrase string, user string, topicID int) string {
-	if user == "" || topicID == 0 {
-		return "missing username"
+func ModifyComment(phrase string, user string, commentID int) string {
+	if user == "" {
+		return "missing u"
+	} else if phrase == "" {
+		return "missing p"
+	} else if commentID == 0 {
+		return "missing c"
+	} else if user == "" || commentID == 0 || phrase == "" {
+		return "missing field"
 	} else {
-		db, err := sql.Open("mysql", filedb)
+		db, err := sql.Open("sqlite3", filedb)
 		CheckErr(err)
-		request_delete_topic := ("SELECT creatorname FROM Comments WHERE id='" + strconv.Itoa(topicID) + "'")
+		request_delete_topic := ("SELECT creatorname FROM Comments WHERE id='" + strconv.Itoa(commentID) + "'")
 		rows, err := db.Query(request_delete_topic)
 		CheckErr(err)
 		var usr string
@@ -24,7 +32,7 @@ func ModifyComment(phrase string, user string, topicID int) string {
 		} else {
 			request_delete_comments, err := db.Prepare("UPDATE Comments SET title=? WHERE id=?")
 			CheckErr(err)
-			request_delete_comments.Exec(phrase, topicID)
+			request_delete_comments.Exec(phrase, commentID)
 			db.Close()
 			return "gg bro"
 		}
