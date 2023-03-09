@@ -32,11 +32,13 @@ var T fd.Topics
 var T2 fd.TopicInfos
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	// if User.SignIn == true {
-	// 	token, err := r.Cookie("session")
-	// 	ff.CheckErr(err)
-	// 	User.Id, User.User_name, User.Email, User.Token = ff.CheckToken(token.Value)
-	// }
+	if User.SignIn == false {
+		token, _ := r.Cookie("session")
+		User.Id, User.User_name, User.Email, User.Token = ff.CheckToken(token.Value)
+		fmt.Println(token.Value == User.Token)
+		fmt.Println(User.Token)
+		fmt.Println(User.Id, User.User_name, User.Email, User.Token)
+	}
 	if r.URL.Path != "/" {
 		ff.Error404(w, r)
 		return
