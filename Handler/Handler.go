@@ -7,7 +7,6 @@ import (
 	ff "forum/Funcs"
 	"html/template"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -589,10 +588,6 @@ func HandleFacebookCallback(w http.ResponseWriter, r *http.Request) {
 
 	User.Token = ff.SetCookie(w, r, User.User_name)
 
-	log.Printf("parseResponseBody: %s\n", string(response))
-	fmt.Println(User.User_name)
-	fmt.Println(User.Id)
-
 	http.Redirect(w, r, "/profile", http.StatusTemporaryRedirect)
 }
 
@@ -642,7 +637,6 @@ func HandleLoginGithub(w http.ResponseWriter, r *http.Request) {
 		defer response.Body.Close()
 
 		body, err := ioutil.ReadAll(response.Body)
-		fmt.Println(string(body))
 		ff.CheckErr(err)
 
 		var tttt fd.Github
@@ -654,9 +648,6 @@ func HandleLoginGithub(w http.ResponseWriter, r *http.Request) {
 		User.Id = tttt.Id
 
 		User.Token = ff.SetCookie(w, r, User.User_name)
-		fmt.Println(tttt.Login)
-		fmt.Println(tttt.Id)
-		fmt.Println(User.Id)
 
 	}
 }
