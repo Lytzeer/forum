@@ -33,7 +33,7 @@
     </div>
     <div class="title flex items-center flex-col mt-8">
         <h1 class="nexa-heavy text-white text-8xl">Profil</h1>
-        <div class="text-white nexa-heavy text-2xl mt-2">Hello, <span class="text-purp">{{ .User_name }}</span> !</div>
+        <div class="text-white nexa-heavy text-2xl mt-2">Hello, <span class="text-purp">{{ .User.User_name }}</span> !</div>
     </div>
     <form action="/register" method="post">
     <div class="content grid grid-cols-3 grid-rows-1 mt-10">
@@ -48,5 +48,14 @@
         </div>
     </div>
 </form>
+
+{{range .Topics}}
+<p>{{.TopicID}}</p>
+<p>{{.TopicTitle}}</p>
+<p>{{.TopicMessage}}</p>
+<p>{{.TopicTime}}</p>
+<p>{{.TopicAuthor}}</p>
+<p>{{.TopicCategory}}</p>
+{{end}}
 </body>
 </html>

@@ -140,8 +140,10 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			var tmpl *template.Template
+			T.Topics = ff.GetTopics()
+			T.User = User
 			tmpl = template.Must(template.ParseFiles("./static/profile.html"))
-			err := tmpl.Execute(w, User)
+			err := tmpl.Execute(w, T)
 			ff.CheckErr(err)
 			return
 		}
