@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 
@@ -545,20 +544,13 @@ var (
 	oauthStateString = "thisshouldberandom"
 )
 
-type Facebook struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
 func HandleLoginFacebook(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/loginfacebook" {
 		ff.Error404(w, r)
 		return
 	} else {
 		Url, err := url.Parse(oauthConf.Endpoint.AuthURL)
-		if err != nil {
-			log.Fatal("Parse: ", err)
-		}
+		ff.CheckErr(err)
 		parameters := url.Values{}
 		parameters.Add("client_id", oauthConf.ClientID)
 		parameters.Add("scope", strings.Join(oauthConf.Scopes, " "))
@@ -572,39 +564,21 @@ func HandleLoginFacebook(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleFacebookCallback(w http.ResponseWriter, r *http.Request) {
-	state := r.FormValue("state")
-	if state != oauthStateString {
-		fmt.Printf("invalid oauth state, expected '%s', got '%s'\n", oauthStateString, state)
-		http.Redirect(w, r, "/profile", http.StatusTemporaryRedirect)
-		return
-	}
 
 	code := r.FormValue("code")
 
 	token, err := oauthConf.Exchange(oauth2.NoContext, code)
-	if err != nil {
-		fmt.Printf("oauthConf.Exchange() failed with '%s'\n", err)
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
+	ff.CheckErr(err)
 
 	resp, err := http.Get("https://graph.facebook.com/me?access_token=" +
 		url.QueryEscape(token.AccessToken))
-	if err != nil {
-		fmt.Printf("Get: %s\n", err)
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
+	ff.CheckErr(err)
 	defer resp.Body.Close()
 
 	response, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Printf("ReadAll: %s\n", err)
-		http.Redirect(w, r, "/profile", http.StatusTemporaryRedirect)
-		return
-	}
+	ff.CheckErr(err)
 
-	var fbUser Facebook
+	var fbUser fd.Facebook
 	err = json.Unmarshal(response, &fbUser)
 	ff.CheckErr(err)
 
@@ -635,45 +609,26 @@ func HandleLoginGithub(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		err := r.ParseForm()
-		if err != nil {
-			fmt.Fprintf(os.Stdout, "could not parse query: %v", err)
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
+		ff.CheckErr(err)
 		code := r.FormValue("code")
 
 		// Next, lets for the HTTP request to call the github oauth endpoint
 		// to get our access token
 		reqURL := fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", clientID, clientSecret, code)
 		req, err := http.NewRequest(http.MethodPost, reqURL, nil)
-		if err != nil {
-			fmt.Fprintf(os.Stdout, "could not create HTTP request: %v", err)
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		// We set this header since we want the response
-		// as JSON
+		ff.CheckErr(err)
 		req.Header.Set("accept", "application/json")
 
 		// Send out the HTTP request
 		res, err := httpClient.Do(req)
-		if err != nil {
-			fmt.Fprintf(os.Stdout, "could not send HTTP request: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+		ff.CheckErr(err)
 		defer res.Body.Close()
 
-		// Parse the request body into the `OAuthAccessResponse` struct
 		var t OAuthAccessResponse
-		if err := json.NewDecoder(res.Body).Decode(&t); err != nil {
-			fmt.Fprintf(os.Stdout, "could not parse JSON response: %v", err)
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
 
-		// Finally, send a response to redirect the user to the "welcome" page
-		// with the access token
+		err = json.NewDecoder(res.Body).Decode(&t)
+		ff.CheckErr(err)
+
 		w.Header().Set("Location", "/profile?access_token="+t.AccessToken)
 		w.WriteHeader(http.StatusFound)
 
@@ -689,7 +644,7 @@ func HandleLoginGithub(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(string(body))
 		ff.CheckErr(err)
 
-		var tttt Github
+		var tttt fd.Github
 
 		err = json.Unmarshal(body, &tttt)
 		ff.CheckErr(err)
@@ -703,9 +658,4 @@ func HandleLoginGithub(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(User.Id)
 
 	}
-}
-
-type Github struct {
-	Login string `json:"login"`
-	Id    int    `json:"id"`
 }
