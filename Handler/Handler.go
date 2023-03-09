@@ -1,11 +1,21 @@
 package forum
 
 import (
+	"encoding/json"
+	"fmt"
 	fd "forum/Datas"
 	ff "forum/Funcs"
 	"html/template"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"net/url"
+	"os"
 	"strconv"
+	"strings"
+
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/facebook"
 )
 
 type displayerror struct {
@@ -522,4 +532,180 @@ func HandleFilters(w http.ResponseWriter, r *http.Request) {
 		ff.CheckErr(err)
 		return
 	}
+}
+
+var (
+	oauthConf = &oauth2.Config{
+		ClientID:     "1210097736303314",
+		ClientSecret: "386a018e3f1fd63e3d70a5a0a65fcc65",
+		RedirectURL:  "http://localhost:8080/oauth2callback",
+		Scopes:       []string{"public_profile"},
+		Endpoint:     facebook.Endpoint,
+	}
+	oauthStateString = "thisshouldberandom"
+)
+
+type Facebook struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+func HandleLoginFacebook(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/loginfacebook" {
+		ff.Error404(w, r)
+		return
+	} else {
+		Url, err := url.Parse(oauthConf.Endpoint.AuthURL)
+		if err != nil {
+			log.Fatal("Parse: ", err)
+		}
+		parameters := url.Values{}
+		parameters.Add("client_id", oauthConf.ClientID)
+		parameters.Add("scope", strings.Join(oauthConf.Scopes, " "))
+		parameters.Add("redirect_uri", oauthConf.RedirectURL)
+		parameters.Add("response_type", "code")
+		parameters.Add("state", oauthStateString)
+		Url.RawQuery = parameters.Encode()
+		url := Url.String()
+		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	}
+}
+
+func HandleFacebookCallback(w http.ResponseWriter, r *http.Request) {
+	state := r.FormValue("state")
+	if state != oauthStateString {
+		fmt.Printf("invalid oauth state, expected '%s', got '%s'\n", oauthStateString, state)
+		http.Redirect(w, r, "/profile", http.StatusTemporaryRedirect)
+		return
+	}
+
+	code := r.FormValue("code")
+
+	token, err := oauthConf.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		fmt.Printf("oauthConf.Exchange() failed with '%s'\n", err)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	resp, err := http.Get("https://graph.facebook.com/me?access_token=" +
+		url.QueryEscape(token.AccessToken))
+	if err != nil {
+		fmt.Printf("Get: %s\n", err)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	defer resp.Body.Close()
+
+	response, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("ReadAll: %s\n", err)
+		http.Redirect(w, r, "/profile", http.StatusTemporaryRedirect)
+		return
+	}
+
+	var fbUser Facebook
+	err = json.Unmarshal(response, &fbUser)
+	ff.CheckErr(err)
+
+	User.User_name = fbUser.Name
+	idint, _ := strconv.Atoi(fbUser.ID)
+	User.Id = idint
+
+	User.Token = ff.SetCookie(w, r, User.User_name)
+
+	log.Printf("parseResponseBody: %s\n", string(response))
+	fmt.Println(User.User_name)
+	fmt.Println(User.Id)
+
+	http.Redirect(w, r, "/profile", http.StatusTemporaryRedirect)
+}
+
+type OAuthAccessResponse struct {
+	AccessToken string `json:"access_token"`
+}
+
+const clientID = "5fe1b31b4f9577bc2463"
+const clientSecret = "f19d67ab63b0f452c5a9109f445fc99b7cfe098e"
+
+func HandleLoginGithub(w http.ResponseWriter, r *http.Request) {
+	httpClient := http.Client{}
+	if r.URL.Path != "/oauth/redirect" {
+		ff.Error404(w, r)
+		return
+	} else {
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "could not parse query: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		code := r.FormValue("code")
+
+		// Next, lets for the HTTP request to call the github oauth endpoint
+		// to get our access token
+		reqURL := fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", clientID, clientSecret, code)
+		req, err := http.NewRequest(http.MethodPost, reqURL, nil)
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "could not create HTTP request: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		// We set this header since we want the response
+		// as JSON
+		req.Header.Set("accept", "application/json")
+
+		// Send out the HTTP request
+		res, err := httpClient.Do(req)
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "could not send HTTP request: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		defer res.Body.Close()
+
+		// Parse the request body into the `OAuthAccessResponse` struct
+		var t OAuthAccessResponse
+		if err := json.NewDecoder(res.Body).Decode(&t); err != nil {
+			fmt.Fprintf(os.Stdout, "could not parse JSON response: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		// Finally, send a response to redirect the user to the "welcome" page
+		// with the access token
+		w.Header().Set("Location", "/profile?access_token="+t.AccessToken)
+		w.WriteHeader(http.StatusFound)
+
+		req, err = http.NewRequest("GET", "https://api.github.com/user", nil)
+		req.Header.Set("Accept", "application/vnd.github.v3+json")
+		req.Header.Set("Authorization", "token "+t.AccessToken)
+
+		response, err := httpClient.Do(req)
+		ff.CheckErr(err)
+		defer response.Body.Close()
+
+		body, err := ioutil.ReadAll(response.Body)
+		fmt.Println(string(body))
+		ff.CheckErr(err)
+
+		var tttt Github
+
+		err = json.Unmarshal(body, &tttt)
+		ff.CheckErr(err)
+
+		User.User_name = tttt.Login
+		User.Id = tttt.Id
+
+		User.Token = ff.SetCookie(w, r, User.User_name)
+		fmt.Println(tttt.Login)
+		fmt.Println(tttt.Id)
+		fmt.Println(User.Id)
+
+	}
+}
+
+type Github struct {
+	Login string `json:"login"`
+	Id    int    `json:"id"`
 }
