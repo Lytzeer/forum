@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func Like(id int, user string) {
+func Like(id int, user string, comment_author string) {
 	if id == 0 || user == "" {
 		return
 	} else {
@@ -29,21 +30,25 @@ func Like(id int, user string) {
 		CheckErr(err)
 		if strings.Contains(likedTopics, idstr) {
 			request_like := "UPDATE Comments SET like = like - 1 WHERE id = '" + idstr + "'"
-			fmt.Println(DeleteLikeUser(user, idstr, "likedTopics"))
-			fmt.Println(idstr)
+			DeleteLikeUser(user, idstr, "likedTopics")
 			_, err = db.Exec(request_like)
 		} else {
 			request_like := "UPDATE Comments SET like = like + 1 WHERE id = '" + idstr + "'"
-			fmt.Println(AddLikeUser(user, idstr, "likedTopics"))
-			fmt.Println(idstr)
+			AddLikeUser(user, idstr, "likedTopics")
 			_, err = db.Exec(request_like)
+			notif, err := db.Prepare("INSERT INTO Notif(date, user, str) VALUES (?,?,?)")
+			CheckErr(err)
+			defer notif.Close()
+			_, err = notif.Exec(time.Now().String(), comment_author , user+" a liké votre post")
+			CheckErr(err)
+			defer db.Close()
 		}
 		CheckErr(err)
 		db.Close()
 	}
 }
 
-func Dislike(id int, user string) {
+func Dislike(id int, user string, comment_author string) {
 	if id == 0 {
 		return
 	} else {
@@ -63,14 +68,18 @@ func Dislike(id int, user string) {
 		CheckErr(err)
 		if strings.Contains(dislikedTopics, idstr) {
 			request_dislike := "UPDATE Comments SET dislike = dislike - 1 WHERE id = '" + idstr + "'"
-			fmt.Println(DeleteLikeUser(user, idstr, "dislikedTopics"))
-			fmt.Println(idstr)
+			DeleteLikeUser(user, idstr, "dislikedTopics")
 			_, err = db.Exec(request_dislike)
 		} else {
 			request_dislike := "UPDATE Comments SET dislike = dislike + 1 WHERE id = '" + idstr + "'"
-			fmt.Println(AddLikeUser(user, idstr, "dislikedTopics"))
-			fmt.Println(idstr)
+			AddLikeUser(user, idstr, "dislikedTopics")
 			_, err = db.Exec(request_dislike)
+			notif, err := db.Prepare("INSERT INTO Notif(date, user, str) VALUES (?,?,?)")
+			CheckErr(err)
+			defer notif.Close()
+			_, err = notif.Exec(time.Now().String(), comment_author , user+" a liké votre post")
+			CheckErr(err)
+			defer db.Close()
 		}
 	}
 }
@@ -98,7 +107,6 @@ func AddLikeUser(user string, id string, typelike string) string {
 		}
 	}
 	newLikedTopics += id
-
 	request_update_liked_topic := "UPDATE User SET " + typelike + " = '" + newLikedTopics + "' WHERE username='" + user + "'"
 	_, err = db.Exec(request_update_liked_topic)
 	CheckErr(err)
@@ -119,7 +127,6 @@ func DeleteLikeUser(user string, id string, typelike string) string {
 	}
 	listedLikedTopics := strings.Split(likedTopics, "-")
 	strings.TrimSpace(likedTopics)
-	fmt.Println(listedLikedTopics)
 	var newLikedTopics string
 	for _, ch := range listedLikedTopics {
 		if string(ch) != id && string(ch) != "" {

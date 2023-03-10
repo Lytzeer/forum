@@ -25,7 +25,7 @@ func AddComment(phrase string, user string, commentid int, topicauthor string) s
 		notif, err := db.Prepare("INSERT INTO Notif(date, user, str) VALUES (?,?,?)")
 		CheckErr(err)
 		defer notif.Close()
-		_, err = notif.Exec(time.Now().String(), topicauthor, user+" à commenté votre post")
+		_, err = notif.Exec(time.Now().String(), topicauthor, user+" a commenté votre post")
 		CheckErr(err)
 		defer db.Close()
 

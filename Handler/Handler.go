@@ -24,6 +24,7 @@ var t displayerror
 var User fd.User
 var Topics []fd.Topic
 var Topic fd.Topic
+var Comment fd.Comment
 
 var modifycommentid int
 var modifytopicid int
@@ -445,7 +446,7 @@ func HandleLike(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("like")
 			idint, _ := strconv.Atoi(id)
-			ff.Like(idint, User.User_name)
+			ff.Like(idint, User.User_name, Comment.CreatorName)
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)
 			Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
@@ -474,7 +475,7 @@ func HandleDislike(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("dislike")
 			idint, _ := strconv.Atoi(id)
-			ff.Dislike(idint, User.User_name)
+			ff.Dislike(idint, User.User_name, Comment.CreatorName)
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)
 			Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
@@ -501,7 +502,7 @@ func HandleLikeTopic(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
-			ff.LikeTopic(T2.Topic.TopicID)
+			ff.LikeTopic(T2.Topic.TopicID, User.User_name, Topic.TopicAuthor)
 			T2.Topic = ff.GetOneTopics(T2.Topic.TopicID)
 			T2.Topic.Comments = ff.GetCommmentsOfTopic(T2.Topic.TopicID)
 			T2.User = User
@@ -527,7 +528,7 @@ func HandleDislikeTopic(w http.ResponseWriter, r *http.Request) {
 			ff.CheckErr(err)
 			return
 		} else {
-			ff.DislikeTopic(T2.Topic.TopicID)
+			ff.DislikeTopic(T2.Topic.TopicID, User.User_name, Topic.TopicAuthor)
 			T2.Topic = ff.GetOneTopics(T2.Topic.TopicID)
 			T2.Topic.Comments = ff.GetCommmentsOfTopic(T2.Topic.TopicID)
 			T2.User = User
