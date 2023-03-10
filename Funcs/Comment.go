@@ -66,18 +66,20 @@ func GetCommentsLiked(user string) []fd.Comment {
 	liststr := strings.Split(likedComments, "-")
 	var comments []fd.Comment
 	for _, str := range liststr {
-		i, err := strconv.Atoi(str)
-		CheckErr(err)
-		request_select_topic := "SELECT * FROM Comments WHERE id = " + strconv.Itoa(i)
-		rows, err := db.Query(request_select_topic)
-		CheckErr(err)
-		for rows.Next() {
-			var comment fd.Comment
-			err := rows.Scan(&comment.Id, &comment.Title, &comment.Likes, &comment.Dislikes, &comment.TopicId, &comment.CreatorName)
+		if str != "" && str != " " {
+			i, err := strconv.Atoi(str)
 			CheckErr(err)
-			comments = append(comments, comment)
+			request_select_topic := "SELECT * FROM Comments WHERE id = " + strconv.Itoa(i)
+			rows, err := db.Query(request_select_topic)
+			CheckErr(err)
+			for rows.Next() {
+				var comment fd.Comment
+				err := rows.Scan(&comment.Id, &comment.Title, &comment.Likes, &comment.Dislikes, &comment.TopicId, &comment.CreatorName)
+				CheckErr(err)
+				comments = append(comments, comment)
+			}
+			defer rows.Close()
 		}
-		defer rows.Close()
 	}
 	return comments
 }

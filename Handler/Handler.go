@@ -445,7 +445,7 @@ func HandleLike(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("like")
 			idint, _ := strconv.Atoi(id)
-			ff.Like(idint)
+			ff.Like(idint, User.User_name)
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)
 			Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
@@ -474,7 +474,7 @@ func HandleDislike(w http.ResponseWriter, r *http.Request) {
 		} else {
 			id := r.FormValue("dislike")
 			idint, _ := strconv.Atoi(id)
-			ff.Dislike(idint)
+			ff.Dislike(idint, User.User_name)
 			var tmpl *template.Template
 			Topic = ff.GetOneTopics(Topic.TopicID)
 			Topic.Comments = ff.GetCommmentsOfTopic(Topic.TopicID)
