@@ -112,10 +112,16 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		var tmpl *template.Template
 		t.Leprobleme = ff.Login(name, password)
 		if t.Leprobleme == "Login successful" {
+			var ProfileDatas fd.ProfileDatas
+			var tmpl *template.Template
+			ProfileDatas.Topics = ff.GetTopics()
+			ProfileDatas.User = User
 			tmpl = template.Must(template.ParseFiles("./static/profile.html"))
 			t.Leprobleme = ""
 			User.Token = ff.SetCookie(w, r, User.User_name)
-			err := tmpl.Execute(w, User)
+			ProfileDatas.Topics = ff.GetTopics()
+			ProfileDatas.User = User
+			err := tmpl.Execute(w, ProfileDatas)
 			ff.CheckErr(err)
 		} else {
 			tmpl = template.Must(template.ParseFiles("./static/login.html"))
@@ -140,10 +146,11 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			var tmpl *template.Template
-			T.Topics = ff.GetTopics()
-			T.User = User
+			var ProfileDatas fd.ProfileDatas
+			ProfileDatas.Topics = ff.GetTopics()
+			ProfileDatas.User = User
 			tmpl = template.Must(template.ParseFiles("./static/profile.html"))
-			err := tmpl.Execute(w, T)
+			err := tmpl.Execute(w, ProfileDatas)
 			ff.CheckErr(err)
 			return
 		}
@@ -380,9 +387,12 @@ func HandleEditProfile(w http.ResponseWriter, r *http.Request) {
 			if newusername != "" {
 				ff.EditUsername(User.Id, newusername)
 			}
+			var ProfileDatas fd.ProfileDatas
 			var tmpl *template.Template
+			ProfileDatas.Topics = ff.GetTopics()
+			ProfileDatas.User = User
 			tmpl = template.Must(template.ParseFiles("./static/editprofile.html"))
-			err := tmpl.Execute(w, User)
+			err := tmpl.Execute(w, ProfileDatas)
 			ff.CheckErr(err)
 			return
 		}
