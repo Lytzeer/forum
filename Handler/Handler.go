@@ -116,6 +116,9 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 			var tmpl *template.Template
 			ProfileDatas.Topics = ff.GetTopics()
 			ProfileDatas.User = User
+			ProfileDatas.LikedTopics = ff.GetTopicsLiked(User.User_name)
+			ProfileDatas.LikedComments = ff.GetCommentsLiked(User.User_name)
+			fmt.Println(ProfileDatas.LikedComments)
 			tmpl = template.Must(template.ParseFiles("./static/profile.html"))
 			t.Leprobleme = ""
 			User.Token = ff.SetCookie(w, r, User.User_name)
@@ -149,6 +152,9 @@ func HandleProfile(w http.ResponseWriter, r *http.Request) {
 			var ProfileDatas fd.ProfileDatas
 			ProfileDatas.Topics = ff.GetTopics()
 			ProfileDatas.User = User
+			ProfileDatas.LikedTopics = ff.GetTopicsLiked(User.User_name)
+			ProfileDatas.LikedComments = ff.GetCommentsLiked(User.User_name)
+			fmt.Println(ProfileDatas.LikedComments)
 			tmpl = template.Must(template.ParseFiles("./static/profile.html"))
 			err := tmpl.Execute(w, ProfileDatas)
 			ff.CheckErr(err)
@@ -391,6 +397,9 @@ func HandleEditProfile(w http.ResponseWriter, r *http.Request) {
 			var tmpl *template.Template
 			ProfileDatas.Topics = ff.GetTopics()
 			ProfileDatas.User = User
+			ProfileDatas.LikedTopics = ff.GetTopicsLiked(User.User_name)
+			ProfileDatas.LikedComments = ff.GetCommentsLiked(User.User_name)
+			fmt.Println(ProfileDatas.LikedComments)
 			tmpl = template.Must(template.ParseFiles("./static/editprofile.html"))
 			err := tmpl.Execute(w, ProfileDatas)
 			ff.CheckErr(err)

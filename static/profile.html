@@ -69,8 +69,7 @@
         </div>
         <div class="text-white nexa-heavy text-base col-start-2 flex flex-col ml-5 mt-24 items-center">
             <span class="mb-2 text-center">Liked Posts :</span>
-            {{ $Username := .User.User_name}}
-            {{ range .Topics}}
+            {{ range .LikedTopics}}
             <form action="/infos" method="get">
             <button value="{{ .TopicID }}" name="id">
                 <div class="flex flex-col border-white border-2 rounded-2xl mt-1">
@@ -82,48 +81,23 @@
                     <span class="mb-4">{{ .TopicMessage }}</span>
                 </div>
             </form>
-            {{ if eq $Username .TopicAuthor}}
-            <form action="/delete" method="post">
-                <button class="" value="{{.TopicID}}" name="delete">
-                    <img src="/static/pics/delete.svg" alt="Delete Logo" class="my-1">
-                </button>
-            </form>    
-            <form action="/modifyt" method="get">
-                <button class="px-4" value="{{.TopicID}}" name="modify">
-                    <img src="/static/pics/modify.svg" alt="Delete Logo" class="my-1">
-                </button>
-            </form>
-            {{end}}
             </button>
             {{end}}
         </div>
         <div class="text-white nexa-heavy text-base col-start-3 flex flex-col ml-5 mt-24 items-center">
-            <span class="mb-2 text-center">Lastest Posts :</span>
-            {{ $Username := .User.User_name}}
-            {{ range .Topics}}
+            <span class="mb-2 text-center">Liked Comments :</span>
+            {{ range .LikedComments}}
             <form action="/infos" method="get">
-            <button value="{{ .TopicID }}" name="id">
+            <button value="{{ .Id }}" name="id">
                 <div class="flex flex-col border-white border-2 rounded-2xl mt-1">
                     <div class="info flex nexa-light">
-                        <span class="flex text-purp mt-2 ml-1">Create by: {{.TopicAuthor}} | </span>
-                        <span class="flex text-purp mt-2 ml-1">{{ .TopicTime}}</span>
+                        <span class="flex text-purp mt-2 ml-1">Posted by:  {{.CreatorName}} | </span>
+                        <span class="flex text-purp mt-2 ml-1"></span>
                     </div>
-                    <span class="text-purp mt-1">{{ .TopicTitle }}</span>
-                    <span class="mb-4">{{ .TopicMessage }}</span>
+                    <span class="text-purp mt-1">{{ .Title }}</span>
+                    <span class="mb-4">{{ .Title }}</span>
                 </div>
             </form>
-            {{ if eq $Username .TopicAuthor}}
-            <form action="/delete" method="post">
-                <button class="" value="{{.TopicID}}" name="delete">
-                    <img src="/static/pics/delete.svg" alt="Delete Logo" class="my-1">
-                </button>
-            </form>    
-            <form action="/modifyt" method="get">
-                <button class="px-4" value="{{.TopicID}}" name="modify">
-                    <img src="/static/pics/modify.svg" alt="Delete Logo" class="my-1">
-                </button>
-            </form>
-            {{end}}
             </button>
             {{end}}
         </div>
