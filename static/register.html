@@ -37,6 +37,9 @@
                 Confirm Password :
             </span>
             <input type="password" class="rounded-2xl bg-bgray text-black pl-2" id="conf-password-register" name="conf-password-register">
+            <div>
+                <p class="text-red-600 mt-5 text-center">{{.Error}}</p>
+            </div>
             <div class="button mt-10 flex justify-around text-purp">
                 <button class="bg-bgray flex justify-center rounded-2xl w-24" type="submit" name="login">Create</button>
             </div>

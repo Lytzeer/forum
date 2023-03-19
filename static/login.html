@@ -29,7 +29,10 @@
                 Password :
             </span>
             <input type="password" class="rounded-2xl bg-bgray text-black pl-2" id="password-login" name="password-login">
-            <div class="button mt-10 flex justify-around text-purp">
+            <div>
+                <p class="text-red-600 mt-5 text-center">{{.Error}}</p>
+            </div>
+            <div class="button mt-5 flex justify-around text-purp">
                 <button class="bg-bgray flex justify-center rounded-2xl w-24" type="submit" id="login" name="login">Login</button>
             </form>
             <form action="/register" method="post">
@@ -37,7 +40,7 @@
                    <button class="bg-bgray flex justify-center rounded-2xl w-24" name="register">Register</button>
                 </a>
             </form>
-            </div>
+        </div>
             <div class="flex flex-row justify-around mt-4">
                 <div class="flex flex-col items-center text-xs">
                     <a href="https://github.com/login/oauth/authorize?client_id=5fe1b31b4f9577bc2463&redirect_uri=http://localhost:8080/oauth/redirect">
@@ -53,6 +56,5 @@
                 </div>
             </div>
         </div>
-    </div>
 </body>
 </html>
